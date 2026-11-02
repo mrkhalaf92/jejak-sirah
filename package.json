@@ -1,0 +1,9 @@
+{
+  "name": "jejak-sirah",
+  "private": true,
+  "type": "module",
+  "description": "Jejak Sirah: pengembaraan 3D sirah Nabi Muhammad SAW, dengan leaderboard Netlify Functions + Blobs.",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.7"
+  }
+}

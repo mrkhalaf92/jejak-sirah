@@ -1,0 +1,2150 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>Jejak Sirah</title>
+<meta name="description" content="Jejak Sirah: pengembaraan 3D menelusuri sirah Nabi Muhammad SAW. Percuma, dalam Bahasa Melayu.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232B2F5C%22/%3E%3Crect x=%2230%22 y=%2232%22 width=%2240%22 height=%2240%22 fill=%22%231E1E24%22/%3E%3Crect x=%2230%22 y=%2242%22 width=%2240%22 height=%226%22 fill=%22%23C9A13A%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one-column game screens (max 520px) over a sand ground; the map is a tall winding desert trail. */
+:root{
+  --sand:#F1E4C8; --paper:#FBF5E8; --ink:#2A2440; --muted:#6B6379;
+  --primary:#2B2F5C; --on-primary:#FBF5E8; --saffron:#B8681A; --saffron-soft:#F3D9B0;
+  --ok:#2F7D62; --ok-soft:#D5EBDF; --bad:#B4483A; --bad-soft:#F4D9D3;
+  --line:#D9C59C; --dune1:#E9D5A8; --dune2:#DDBF86; --trail:#9A7442; --palm:#5E7F4F;
+  --shadow:rgba(42,36,64,.16); --star-op:0; --sky:#F1E4C8;
+  --f-display:"Reem Kufi","Trebuchet MS",sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sand:#15172B; --paper:#1F2241; --ink:#F1E9D6; --muted:#A9A2BD;
+  --primary:#E2B866; --on-primary:#1A1C33; --saffron:#E8A050; --saffron-soft:#3A2E2A;
+  --ok:#5BBF97; --ok-soft:#1E3A33; --bad:#E58372; --bad-soft:#3E2328;
+  --line:#353A63; --dune1:#232749; --dune2:#2B3058; --trail:#C9A96B; --palm:#7FA36C;
+  --shadow:rgba(0,0,0,.4); --star-op:.85; --sky:#15172B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sand:#15172B; --paper:#1F2241; --ink:#F1E9D6; --muted:#A9A2BD;
+  --primary:#E2B866; --on-primary:#1A1C33; --saffron:#E8A050; --saffron-soft:#3A2E2A;
+  --ok:#5BBF97; --ok-soft:#1E3A33; --bad:#E58372; --bad-soft:#3E2328;
+  --line:#353A63; --dune1:#232749; --dune2:#2B3058; --trail:#C9A96B; --palm:#7FA36C;
+  --shadow:rgba(0,0,0,.4); --star-op:.85; --sky:#15172B; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--sand);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:520px;margin:0 auto;padding-block:20px 40px}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:2.6rem;letter-spacing:.01em}
+h2{font-size:1.6rem}
+h3{font-size:1.15rem}
+p{margin:0}
+.eyebrow{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--saffron);font-weight:700}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.screen{display:flex;flex-direction:column;gap:18px;animation:in .35s ease}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.btn{font:inherit;font-weight:700;border:0;border-radius:14px;padding:14px 20px;cursor:pointer;
+  background:var(--primary);color:var(--on-primary);box-shadow:0 3px 0 var(--shadow);transition:transform .1s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--shadow)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn.wide{width:100%}
+.btn:focus-visible,.chip:focus-visible,.card:focus-visible,.opt:focus-visible,.slot:focus-visible,input:focus-visible{outline:3px solid var(--saffron);outline-offset:2px}
+
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px}
+
+/* title */
+.hero{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+.hero svg{width:100%;height:auto;display:block}
+.note{font-size:.85rem;color:var(--muted);border-left:3px solid var(--saffron);padding-left:12px}
+
+/* avatar */
+.av-stage{display:flex;justify-content:center;padding:10px 0;background:radial-gradient(circle at 50% 70%,var(--saffron-soft),transparent 65%)}
+.av-stage svg{width:150px;height:auto}
+label.lbl{font-weight:700;font-size:.9rem;display:block;margin-bottom:8px}
+input[type=text]{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--paper);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:.9rem;font-weight:600;padding:8px 12px;border-radius:999px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--saffron);background:var(--saffron-soft)}
+.sw{width:36px;height:36px;padding:0;border-radius:50%}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--saffron)}
+.presets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.preset{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:6px 4px 2px;cursor:pointer;display:flex;justify-content:center}
+.preset svg{width:100%;max-width:64px;height:auto}
+.preset:focus-visible{outline:3px solid var(--saffron)}
+
+/* map */
+.hud{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:10px 14px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.hud svg{width:40px;height:auto}
+.hud .who{flex:1;min-width:0}
+.hud .who b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tally{font-variant-numeric:tabular-nums;font-weight:700;display:flex;gap:10px;font-size:.9rem}
+.map{width:100%;height:auto;display:block;border-radius:20px;border:1px solid var(--line)}
+.m-sky{fill:var(--sky)} .m-d1{fill:var(--dune1)} .m-d2{fill:var(--dune2)}
+.m-star{fill:var(--ink);opacity:var(--star-op)}
+.m-trail{fill:none;stroke:var(--trail);stroke-width:5;stroke-dasharray:2 12;stroke-linecap:round}
+.m-palm-t{fill:var(--trail)} .m-palm-l{fill:var(--palm)}
+.node{cursor:pointer}
+.node circle.base{fill:var(--paper);stroke:var(--line);stroke-width:3}
+.node.open circle.base{fill:var(--saffron);stroke:var(--paper)}
+.node.done circle.base{fill:var(--ok);stroke:var(--paper)}
+.node text.num{font-family:var(--f-display);font-size:20px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.node.open text.num,.node.done text.num{fill:#FFFFFF}
+.node text.t{font-family:var(--f-display);font-size:15px;font-weight:600;fill:var(--ink)}
+.node text.s{font-size:11.5px;fill:var(--muted);font-family:var(--f-body)}
+.node text.st{font-size:12px;fill:var(--saffron);font-weight:700;font-family:var(--f-body)}
+.node.locked{cursor:default}
+.node.locked text.t{fill:var(--muted)}
+.pulse{fill:none;stroke:var(--saffron);stroke-width:3;opacity:.7;transform-box:fill-box;transform-origin:center;animation:pulse 1.6s ease-out infinite}
+@keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(1.6);opacity:0}}
+.m-start{fill:var(--trail)}
+.m-label{font-size:12px;fill:var(--muted);font-family:var(--f-body);font-weight:600}
+
+/* story */
+.story p{font-size:1.05rem}
+.story .place{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--saffron-soft);color:var(--ink)}
+
+/* sort */
+.slots{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.slot{display:flex;align-items:center;gap:10px;min-height:52px;border:2px dashed var(--line);border-radius:14px;padding:8px 12px;background:transparent;font:inherit;color:var(--ink);text-align:left;width:100%;cursor:pointer}
+.slot .n{font-family:var(--f-display);font-weight:700;color:var(--saffron);width:22px;flex:none;font-variant-numeric:tabular-nums}
+.slot .x{flex:1;min-width:0;font-weight:600}
+.slot.filled{border-style:solid;background:var(--paper)}
+.slot.ok{border-color:var(--ok);background:var(--ok-soft);cursor:default}
+.slot.bad{border-color:var(--bad);background:var(--bad-soft);animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.pool{display:flex;flex-direction:column;gap:8px}
+.card{font:inherit;font-weight:600;text-align:left;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;box-shadow:0 2px 0 var(--shadow)}
+.card:active{transform:translateY(1px)}
+.feedback{min-height:1.5em;font-weight:600}
+.feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)}
+
+/* reveal timeline */
+.tl{list-style:none;margin:0;padding:0 0 0 18px;border-left:3px solid var(--line);display:flex;flex-direction:column;gap:16px}
+.tl li{position:relative}
+.tl li::before{content:"";position:absolute;left:-27px;top:6px;width:15px;height:15px;border-radius:50%;background:var(--saffron);border:3px solid var(--sand)}
+.tl .when{font-size:.78rem;font-weight:700;color:var(--saffron);letter-spacing:.04em;text-transform:uppercase}
+.tl .what{font-weight:700;font-family:var(--f-display);font-size:1.08rem}
+.tl .why{font-size:.94rem;color:var(--muted)}
+
+/* quiz */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;font-weight:600;text-align:left;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft);animation:shake .4s}
+.explain{border-left:3px solid var(--ok);padding-left:12px}
+
+/* done & cert */
+.stars{font-size:2rem;letter-spacing:.15em;color:var(--saffron);font-variant-numeric:tabular-nums}
+.stars .off{color:var(--line)}
+.fact{background:var(--saffron-soft);border-radius:16px;padding:16px}
+.src{font-size:.8rem;color:var(--muted)}
+.cert{text-align:center;border:3px double var(--saffron);border-radius:20px;padding:24px 18px;background:var(--paper);display:flex;flex-direction:column;gap:10px;align-items:center}
+.cert svg.av{width:110px;height:auto}
+.cert .nm{font-family:var(--f-display);font-size:1.8rem;color:var(--saffron)}
+.refs{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.confirm{display:flex;flex-direction:column;gap:10px}
+
+/* 3D */
+.world{position:relative;height:min(62vh,560px);min-height:360px;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--sky)}
+.world-hint{position:absolute;left:10px;right:10px;top:10px;margin:0;text-align:center;font-size:.78rem;color:#FFFFFF;background:rgba(20,18,40,.5);border-radius:999px;padding:6px 10px;pointer-events:none}
+/* checkpoint overlay: deliberate single (night-gold) look over the 3D scene in both themes */
+:root{--dlg-bg:rgba(24,22,46,.88);--dlg-fg:#F6EEDB;--dlg-gold:#E2B866;--dlg-dim:#BDB5D0}
+.play{position:fixed;inset:0;z-index:50;background:#141731;color:var(--dlg-fg);font-family:var(--f-body)}
+.play .w{position:absolute;inset:0}
+.ptop{position:absolute;top:0;left:0;right:0;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));pointer-events:none}
+.ptop>*{pointer-events:auto}
+.chap,.pexit{background:var(--dlg-bg);border:1.5px solid var(--dlg-gold);border-radius:999px;padding:7px 14px;font-weight:700;font-size:.85rem;color:var(--dlg-fg);font-family:var(--f-body)}
+.pexit{cursor:pointer}
+.chap{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbot{position:absolute;left:0;right:0;bottom:0;padding:0 max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));display:flex;justify-content:center}
+.pbot>*{width:100%;max-width:560px}
+.dlg{position:relative;background:var(--dlg-bg);border:2px solid var(--dlg-gold);border-radius:18px;padding:24px 18px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:pop .3s ease}
+.dlg.tap{cursor:pointer}
+.dlg:focus-visible{outline:3px solid var(--dlg-gold);outline-offset:3px}
+@keyframes pop{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.npc{position:absolute;top:-15px;left:16px;background:var(--dlg-gold);color:#1A1C33;font-family:var(--f-display);font-weight:700;padding:3px 14px;border-radius:999px;font-size:.92rem}
+.npc small{font-family:var(--f-body);font-weight:600;opacity:.75;font-size:.72rem;margin-left:6px}
+.dtx{font-size:1.06rem;line-height:1.55;min-height:3.1em}
+.nxt{display:block;text-align:right;font-size:.75rem;color:var(--dlg-gold);margin-top:6px;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.3}}
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.choice{font:inherit;font-weight:600;text-align:left;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(226,184,102,.45);background:rgba(255,255,255,.06);color:var(--dlg-fg);cursor:pointer}
+.choice::before{content:"\25B8  ";color:var(--dlg-gold)}
+.choice:focus-visible{outline:3px solid var(--dlg-gold);outline-offset:2px}
+.choice.ok{background:rgba(91,191,151,.25);border-color:#5BBF97}
+.choice.bad{background:rgba(229,131,114,.18);border-color:#E58372;opacity:.75;animation:shake .4s}
+.qhint{min-height:1.3em;margin-top:8px;font-size:.88rem;color:#F2A091}
+.ovp{background:var(--dlg-bg);border:2px solid var(--dlg-gold);border-radius:18px;padding:16px;max-height:calc(100vh - 90px);max-height:calc(100dvh - 90px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;display:flex;flex-direction:column;gap:12px;animation:pop .3s ease;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.ovp>*{flex-shrink:0}
+.play h2{font-size:1.35rem}
+.play .muted{color:var(--dlg-dim)}
+.play .eyebrow{color:var(--dlg-gold)}
+.play .slot{min-height:46px;border-color:rgba(226,184,102,.4);color:var(--dlg-fg)}
+.play .slot .n{color:var(--dlg-gold)}
+.play .slot.filled{background:rgba(255,255,255,.08)}
+.play .slot.ok{background:rgba(91,191,151,.22);border-color:#5BBF97}
+.play .slot.bad{background:rgba(229,131,114,.22);border-color:#E58372}
+.play .card{background:#F6EEDB;color:#2A2440;border-color:transparent;padding:10px 12px}
+.play .btn{background:var(--dlg-gold);color:#1A1C33}
+.play .btn.ghost{background:transparent;color:var(--dlg-fg);border-color:rgba(226,184,102,.5)}
+.play .feedback.ok{color:#7FD6B2} .play .feedback.bad{color:#F2A091}
+.play .tl{border-color:rgba(226,184,102,.35)}
+.play .tl li::before{border-color:#1F1D38;background:var(--dlg-gold)}
+.play .tl .when{color:var(--dlg-gold)} .play .tl .why{color:#CFC8DE}
+.play .fact{background:rgba(226,184,102,.14)}
+.play .src{color:var(--dlg-dim)}
+.play .stars{color:var(--dlg-gold)} .play .stars .off{color:rgba(255,255,255,.2)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mcol{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mitem{font:inherit;font-size:.9rem;font-weight:600;text-align:left;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;min-height:58px;overflow-wrap:anywhere}
+.mitem.when{font-weight:700;color:var(--saffron)}
+.mitem.sel{border-color:var(--saffron);background:var(--saffron-soft)}
+.mitem.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ink);cursor:default}
+.mitem.bad{border-color:var(--bad);background:var(--bad-soft);animation:shake .4s}
+.mitem:focus-visible{outline:3px solid var(--saffron);outline-offset:2px}
+.vs{display:flex;flex-direction:column;gap:8px}
+.or{text-align:center;font-family:var(--f-display);font-weight:600;color:var(--saffron)}
+.opt.big{padding:18px 14px;font-size:1.05rem}
+.wl{display:block;font-size:.8rem;font-weight:700;color:var(--saffron);margin-top:4px}
+.dots{display:flex;gap:6px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--saffron)}
+.play .mitem{background:rgba(255,255,255,.08);color:var(--dlg-fg);border-color:rgba(226,184,102,.4)}
+.play .mitem.when{color:var(--dlg-gold)}
+.play .mitem.sel{border-color:var(--dlg-gold);background:rgba(226,184,102,.24)}
+.play .mitem.ok{background:rgba(91,191,151,.22);border-color:#5BBF97;color:var(--dlg-fg)}
+.play .mitem.bad{background:rgba(229,131,114,.22);border-color:#E58372}
+.play .opt{background:rgba(255,255,255,.08);color:var(--dlg-fg);border-color:rgba(226,184,102,.4)}
+.play .opt.ok{background:rgba(91,191,151,.25);border-color:#5BBF97}
+.play .opt.bad{background:rgba(229,131,114,.2);border-color:#E58372}
+.play .or,.play .wl{color:var(--dlg-gold)}
+.play .dots i{background:rgba(255,255,255,.2)} .play .dots i.on{background:var(--dlg-gold)}
+.joy{position:absolute;left:14px;bottom:14px;width:108px;height:108px;border-radius:50%;background:rgba(20,18,40,.35);border:2px solid rgba(255,255,255,.55);touch-action:none;cursor:grab}
+.joy .knob{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:none}
+.nearbtn{position:absolute;right:12px;bottom:14px;font:inherit;font-weight:700;border:2px solid #FFFFFF;border-radius:14px;padding:12px 16px;background:#B8681A;color:#FFFFFF;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3);animation:pop .3s ease}
+.toast{position:absolute;left:12px;right:12px;bottom:134px;background:rgba(24,22,46,.92);color:#F6EEDB;border:2px solid #E2B866;border-radius:16px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;animation:pop .3s ease}
+.toast b{color:#E2B866;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+.toast p{margin:0;font-size:.95rem}
+.toast .src{color:#BDB5D0}
+.toast button{align-self:flex-end;font:inherit;font-weight:700;background:#E2B866;color:#1A1C33;border:0;border-radius:10px;padding:6px 14px;cursor:pointer}
+.toggles{display:flex;gap:8px;flex-wrap:wrap}
+.lbrow{display:grid;grid-template-columns:2.2em 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.lbrow.me{border-color:var(--saffron);background:var(--saffron-soft)}
+.lbrow .rk{font-family:var(--f-display);font-weight:700;color:var(--saffron);font-variant-numeric:tabular-nums}
+.lbrow .nm2{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.lbrow .sc{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.lbrow .det{grid-column:2 / 4;font-size:.8rem;color:var(--muted)}
+.lblist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.stage3d{height:250px;padding:0;background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+
+.bsq{font-family:var(--f-display);font-size:1.2rem;font-weight:600;line-height:1.35}
+.bsrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bsrow .opt{text-align:center}
+.opt:disabled{cursor:default}
+.clues{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.clues li{font-weight:600}
+.clues li.hid{font-weight:400;color:var(--muted);font-style:italic}
+.smap{width:100%;height:auto;display:block}
+.sm-bg{fill:var(--dune1)} .sm-hill{fill:var(--dune2);stroke:var(--trail);stroke-width:1} .sm-mt{fill:#9B6B4A} .sm-lava{fill:#3E3836}
+.sm-own{fill:var(--ok)} .sm-foe{fill:var(--bad)} .sm-water{fill:#4F8FB8} .sm-palm{fill:var(--palm)} .sm-town{fill:var(--paper);stroke:var(--trail);stroke-width:2}
+.sm-path{fill:none;stroke:var(--trail);stroke-width:4;stroke-dasharray:2 8;stroke-linecap:round}
+.sm-arrow,.sm-ln{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.sm-t{font-family:var(--f-body);font-size:11.5px;font-weight:600;fill:var(--ink)} .sm-tl{fill:#FFFFFF}
+.sm-spot{cursor:pointer} .sm-spot circle{fill:var(--saffron);stroke:#FFFFFF;stroke-width:2.5} .sm-spot text{fill:#FFFFFF;font-family:var(--f-display);font-weight:700;font-size:14px;pointer-events:none}
+.sm-spot.ok circle{fill:#2F9D72} .sm-spot.bad circle{fill:#9A8E9E;opacity:.7} .sm-spot:focus-visible{outline:none} .sm-spot:focus-visible circle{stroke:var(--ink);stroke-width:4}
+.play .sm-bg{fill:#2A2750} .play .sm-hill{fill:#3B376A;stroke:#6E6798} .play .sm-town{fill:#4A4578;stroke:#E2B866} .play .sm-t{fill:#F6EEDB} .play .sm-arrow,.play .sm-ln{stroke:#F6EEDB} .play .sm-path{stroke:#E2B866} .play .sm-lava{fill:#16131F}
+.play .clues li.hid{color:var(--dlg-dim)}
+.lvcard{font:inherit;text-align:left;display:flex;flex-direction:column;gap:4px;padding:16px 18px;border-radius:18px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;box-shadow:0 3px 0 var(--shadow)}
+.lvcard b{font-family:var(--f-display);font-size:1.35rem;font-weight:600}
+.lvcard.cur{border-color:var(--saffron)}
+.lvcard:disabled,.lvcard.soon{opacity:.6;cursor:not-allowed;box-shadow:none}
+.lvcard:focus-visible{outline:3px solid var(--saffron);outline-offset:2px}
+.lvst{font-weight:700;font-variant-numeric:tabular-nums}
+.lvart{width:100%;height:auto;display:block}
+.medal{font-family:var(--f-display);font-weight:700;font-size:1rem;padding:4px 14px;border-radius:999px;background:#C9874A;color:#FFFFFF}
+.cert.m1{border-color:#9AA3B5} .cert.m1 .medal{background:#8C96A8} .cert.m1 .nm{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app" id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ---------- Data: 6 bab sirah ---------- */
+const CH1 = [
+{
+  name:"Kelahiran & Zaman Muda", short:"Zaman Muda", place:"Makkah", years:"±570M – 605M",
+  intro:[
+    "Kamu tiba di Makkah, lembah gersang di tengah Semenanjung Arab. Kaabah berdiri di tengahnya, tetapi dikelilingi berhala. Di sinilah, pada Tahun Gajah, lahir seorang bayi yatim bernama Muhammad bin Abdullah.",
+    "Tugas pertama kamu: susun peristiwa awal hidup baginda mengikut urutan sebenar."
+  ],
+  ev:[
+    {t:"Kelahiran baginda", w:"Rabiulawal, Tahun Gajah (±570M)", d:"Ayahanda baginda, Abdullah, wafat sebelum baginda lahir. Tarikh tepat ada khilaf: yang masyhur 12 Rabiulawal, manakala al-Mubarakfuri memilih 9 Rabiulawal."},
+    {t:"Ibunda Aminah wafat di Abwa'", w:"Umur 6 tahun", d:"Ketika dalam perjalanan pulang dari Yathrib selepas menziarahi keluarga."},
+    {t:"Datuk Abdul Muttalib wafat", w:"Umur 8 tahun", d:"Selepas itu baginda dipelihara oleh bapa saudaranya, Abu Talib."},
+    {t:"Ke Syam bersama Abu Talib", w:"Umur 12 tahun", d:"Perjalanan dagang pertama baginda ke negeri Syam."},
+    {t:"Berkahwin dengan Khadijah binti Khuwailid", w:"Umur 25 tahun", d:"Selepas baginda membawa barang dagangan Khadijah ke Syam, ditemani pembantunya, Maisarah."},
+    {t:"Menyelesaikan pertelingkahan Hajar Aswad", w:"Umur 35 tahun", d:"Semasa Quraisy membina semula Kaabah, baginda meletakkan Hajar Aswad di atas kain dan setiap ketua kabilah memegang hujungnya. Pertelingkahan selesai tanpa pertumpahan darah."}
+  ],
+  q:{text:"Di perkampungan Bani Sa'ad, siapakah ibu susuan yang menjaga baginda semasa kecil?",
+     opts:["Halimah as-Sa'diyah","Ummu Aiman","Fatimah binti Asad","Asma' binti Abu Bakar"], a:0,
+     ex:"Halimah as-Sa'diyah dari Bani Sa'ad bin Bakr menyusukan dan menjaga baginda di kawasan pedalaman selama beberapa tahun."},
+  fact:"Sebelum diangkat menjadi Rasul, penduduk Makkah sudah menggelar baginda al-Amin, iaitu orang yang amanah.",
+  src:"Ar-Rahiq al-Makhtum (al-Mubarakfuri); Sirah Ibn Hisham."
+},
+{
+  name:"Wahyu Pertama & Dakwah", short:"Wahyu & Dakwah", place:"Gua Hira', Makkah", years:"610M – 616M",
+  intro:[
+    "Menjelang umur 40 tahun, baginda kerap menyendiri di Gua Hira', di puncak Jabal an-Nur. Pada bulan Ramadan, Malaikat Jibril datang membawa wahyu pertama.",
+    "Dari sebuah gua kecil, bermulalah dakwah yang akan mengubah dunia. Susun langkah-langkah awalnya."
+  ],
+  ev:[
+    {t:"Wahyu pertama di Gua Hira'", w:"Ramadan, umur 40 (610M)", d:"Jibril membawa lima ayat pertama Surah al-'Alaq. Baginda pulang dalam keadaan gementar dan diselimuti serta ditenangkan oleh Khadijah."},
+    {t:"Dakwah secara sembunyi", w:"±3 tahun pertama", d:"Antara yang terawal memeluk Islam: Khadijah, Abu Bakar, Ali bin Abi Talib dan Zaid bin Harithah."},
+    {t:"Seruan terbuka di Bukit Safa", w:"Selepas ±3 tahun", d:"Selepas turun ayat \"Dan berilah peringatan kepada kaum kerabatmu yang terdekat\" (asy-Syu'ara': 214), baginda menyeru kaum Quraisy dari atas Bukit Safa."},
+    {t:"Hijrah pertama ke Habsyah", w:"Rejab, tahun ke-5 kenabian (615M)", d:"Sekumpulan kecil Muslim, termasuk Uthman bin Affan dan Ruqayyah, berlindung di bawah Raja Najasyi yang terkenal adil."},
+    {t:"Hamzah dan Umar memeluk Islam", w:"Tahun ke-6 kenabian", d:"Dua tokoh Quraisy yang digeruni memeluk Islam dalam jarak beberapa hari sahaja. Umat Islam mula berani solat secara terbuka di Kaabah."}
+  ],
+  q:{text:"Apakah perkataan pertama wahyu yang diturunkan kepada baginda?",
+     opts:["Iqra' (Bacalah)","Qul (Katakanlah)","Ya ayyuhal muddaththir","Alhamdulillah"], a:0,
+     ex:"Wahyu pertama ialah Surah al-'Alaq ayat 1 hingga 5, bermula dengan \"Iqra'\". Kisahnya diriwayatkan oleh Aisyah dalam Sahih al-Bukhari."},
+  fact:"Bilal bin Rabah diseksa dengan batu besar di atas dadanya di tengah panas Makkah, tetapi terus menyebut \"Ahad, Ahad\". Abu Bakar kemudian membelinya dan memerdekakannya.",
+  src:"Ar-Rahiq al-Makhtum; Sirah Ibn Hisham."
+},
+{
+  name:"Tahun-tahun Ujian", short:"Tahun Ujian", place:"Makkah & Taif", years:"617M – 622M",
+  intro:[
+    "Quraisy makin keras. Mereka memulaukan Bani Hasyim: tiada jual beli, tiada perkahwinan. Kemudian datang tahun yang paling menyedihkan dalam hidup baginda.",
+    "Namun setiap kali satu pintu tertutup, Allah membuka pintu lain. Susun ujian-ujian ini mengikut urutan."
+  ],
+  ev:[
+    {t:"Pemulauan di Syi'b Abi Talib bermula", w:"Muharram, tahun ke-7 kenabian", d:"Bani Hasyim dan Bani Muttalib dikepung di sebuah lembah selama ±3 tahun sehingga terpaksa makan daun."},
+    {t:"Amul Huzn: Abu Talib dan Khadijah wafat", w:"Tahun ke-10 kenabian", d:"Dua insan yang paling kuat menyokong baginda wafat dalam tahun yang sama. Tahun ini dikenali sebagai Tahun Kesedihan."},
+    {t:"Dakwah ke Taif", w:"Syawal, tahun ke-10 kenabian", d:"Baginda dan Zaid bin Harithah dihalau dan dilempar batu oleh penduduk Taif, namun baginda tetap mendoakan kebaikan untuk mereka."},
+    {t:"Bai'ah Aqabah Pertama", w:"Musim haji, tahun ke-12 kenabian (621M)", d:"12 orang dari Yathrib berbai'ah. Mus'ab bin Umair dihantar ke sana untuk mengajar Islam."},
+    {t:"Bai'ah Aqabah Kedua", w:"Musim haji, tahun ke-13 kenabian (622M)", d:"Lebih 70 orang dari Yathrib berjanji untuk melindungi baginda. Jalan untuk Hijrah terbuka."}
+  ],
+  q:{text:"Dalam peristiwa Isra' dan Mi'raj, ibadah apakah yang difardukan ke atas umat Islam?",
+     opts:["Solat lima waktu","Puasa Ramadan","Zakat","Haji"], a:0,
+     ex:"Solat lima waktu difardukan semasa Mi'raj (Sahih al-Bukhari dan Muslim). Isra' disebut dalam Surah al-Isra' ayat 1. Tahun berlakunya ada khilaf dalam kalangan ulama, sebab itu ia tidak dimasukkan dalam susunan tadi."},
+  fact:"Selepas peristiwa Taif, malaikat penjaga gunung menawarkan untuk menghimpit penduduk Taif dengan dua gunung. Baginda menolak, dengan harapan akan lahir daripada keturunan mereka orang yang menyembah Allah.",
+  src:"Sahih al-Bukhari dan Sahih Muslim (hadis Aisyah); Ar-Rahiq al-Makhtum."
+},
+{
+  name:"Hijrah ke Madinah", short:"Hijrah", place:"Gua Thur → Madinah", years:"622M (1 Hijrah)",
+  intro:[
+    "Quraisy sedar Islam akan bertapak di Yathrib. Mereka berpakat untuk membunuh baginda. Malam itu, rumah baginda dikepung.",
+    "Perjalanan sejauh ±450 km merentas padang pasir bermula. Susun setiap langkah Hijrah."
+  ],
+  ev:[
+    {t:"Quraisy berpakat di Darun Nadwah", w:"Safar, tahun ke-14 kenabian", d:"Setiap kabilah menghantar seorang pemuda untuk membunuh baginda serentak. Ali bin Abi Talib tidur di katil baginda pada malam itu."},
+    {t:"Bersembunyi di Gua Thur", w:"3 malam", d:"Bersama Abu Bakar. Asma' binti Abu Bakar menghantar makanan, dan Abdullah bin Abu Bakar membawa berita dari Makkah."},
+    {t:"Dikejar Suraqah bin Malik", w:"Dalam perjalanan ke Madinah", d:"Kaki kudanya terbenam ke dalam pasir berkali-kali. Suraqah akhirnya meminta jaminan keselamatan dan berpatah balik."},
+    {t:"Tiba di Quba", w:"Rabiulawal, 1H (622M)", d:"Baginda tinggal beberapa hari dan membina Masjid Quba, masjid pertama yang dibina dalam Islam."},
+    {t:"Solat Jumaat pertama", w:"Perkampungan Bani Salim bin 'Auf", d:"Dalam perjalanan dari Quba ke tengah kota Madinah."},
+    {t:"Pembinaan Masjid Nabawi", w:"Madinah, 1H", d:"Unta baginda berhenti di tanah milik dua anak yatim. Tanah itu dibeli, lalu masjid dibina di situ."}
+  ],
+  q:{text:"Siapakah yang menemani baginda sepanjang Hijrah, termasuk di Gua Thur?",
+     opts:["Abu Bakar as-Siddiq","Umar al-Khattab","Ali bin Abi Talib","Zaid bin Harithah"], a:0,
+     ex:"Abu Bakar as-Siddiq. Peristiwa di gua disebut dalam Surah at-Taubah ayat 40: \"...ketika dia berkata kepada sahabatnya: Jangan engkau berdukacita, sesungguhnya Allah bersama kita.\""},
+  fact:"Kalendar Hijrah mula digunakan pada zaman Khalifah Umar al-Khattab, dengan tahun Hijrah dijadikan tahun pertama.",
+  src:"Sahih al-Bukhari (Bab Hijrah); Ar-Rahiq al-Makhtum; Sirah Ibn Hisham."
+},
+{
+  name:"Membina Madinah", short:"Membina Madinah", place:"Madinah, Badar, Uhud", years:"1H – 5H (622M – 627M)",
+  intro:[
+    "Yathrib kini dikenali sebagai Madinah. Baginda membina masyarakat baru dengan masjid, persaudaraan dan perjanjian.",
+    "Tetapi Quraisy belum berhenti. Beberapa pertempuran besar akan menguji umat yang masih kecil ini. Susun peristiwanya."
+  ],
+  ev:[
+    {t:"Persaudaraan Muhajirin dan Ansar", w:"1H", d:"Setiap Muhajirin dipersaudarakan dengan seorang Ansar, contohnya Abdul Rahman bin 'Auf dengan Sa'ad bin ar-Rabi'."},
+    {t:"Kiblat bertukar ke Kaabah", w:"2H", d:"Sebelum itu umat Islam di Madinah solat menghadap Baitul Maqdis selama ±16 hingga 17 bulan (al-Baqarah: 144)."},
+    {t:"Perang Badar", w:"17 Ramadan 2H", d:"±313 tentera Islam menewaskan ±1,000 tentera Quraisy."},
+    {t:"Perang Uhud", w:"Syawal 3H", d:"Sebahagian pemanah meninggalkan bukit sebelum diizinkan, lalu keadaan berubah. Saidina Hamzah syahid."},
+    {t:"Perang Khandaq (Ahzab)", w:"5H", d:"Atas cadangan Salman al-Farisi, parit digali di utara Madinah. Tentera bersekutu ±10,000 orang akhirnya berundur."}
+  ],
+  q:{text:"Siapakah yang mencadangkan supaya parit digali untuk mempertahankan Madinah?",
+     opts:["Salman al-Farisi","Khalid al-Walid","Bilal bin Rabah","Sa'ad bin Mu'adh"], a:0,
+     ex:"Salman al-Farisi, sahabat dari Parsi, mencadangkan taktik parit yang biasa digunakan di negerinya."},
+  fact:"Di awal Madinah, baginda menetapkan Sahifah Madinah (Piagam Madinah): dokumen bertulis yang mengatur hak dan tanggungjawab antara Muslim, Yahudi dan kabilah-kabilah di Madinah.",
+  src:"Sirah Ibn Hisham; Ar-Rahiq al-Makhtum."
+},
+{
+  name:"Kemenangan & Perpisahan", short:"Kemenangan", place:"Makkah & Madinah", years:"6H – 11H (628M – 632M)",
+  intro:[
+    "Sebuah perjanjian yang nampak berat sebelah menjadi pintu kemenangan. Dalam beberapa tahun, Makkah dibuka dan Islam tersebar ke seluruh Semenanjung Arab.",
+    "Kemudian tiba masa perpisahan. Ini bab terakhir perjalanan kamu."
+  ],
+  ev:[
+    {t:"Perjanjian Hudaibiyah", w:"Zulkaedah 6H", d:"Gencatan senjata 10 tahun dengan Quraisy. Al-Quran menyebutnya \"kemenangan yang nyata\" (al-Fath: 1)."},
+    {t:"Pembukaan Khaibar", w:"Muharram 7H", d:"Benteng-benteng Khaibar dibuka. Panji diserahkan kepada Ali bin Abi Talib."},
+    {t:"Perang Mu'tah", w:"Jamadilawal 8H", d:"3,000 tentera Islam berdepan tentera Rom yang jauh lebih besar. Zaid, Ja'far dan Abdullah bin Rawahah syahid, lalu Khalid al-Walid memimpin."},
+    {t:"Fathu Makkah", w:"Ramadan 8H", d:"±10,000 tentera masuk ke Makkah. Berhala di sekeliling Kaabah dimusnahkan dan penduduknya dimaafkan."},
+    {t:"Perang Tabuk", w:"Rejab 9H", d:"Ekspedisi ketenteraan terakhir baginda, ±30,000 tentera, dalam musim panas yang sukar."},
+    {t:"Haji Wada'", w:"Zulhijjah 10H", d:"Satu-satunya haji yang baginda tunaikan. Khutbah di Arafah menegaskan kesucian darah, harta dan maruah."},
+    {t:"Rasulullah SAW wafat", w:"Rabiulawal 11H (632M)", d:"Baginda wafat di rumah Aisyah di Madinah, pada usia 63 tahun."}
+  ],
+  q:{text:"Di manakah ayat \"Pada hari ini telah Aku sempurnakan bagi kamu agama kamu\" (al-Ma'idah: 3) diturunkan?",
+     opts:["Di Arafah, semasa Haji Wada'","Di Gua Hira'","Di Masjid Quba","Di medan Badar"], a:0,
+     ex:"Umar al-Khattab menyatakan ayat ini turun pada hari Arafah, iaitu hari Jumaat, semasa Haji Wada' (Sahih al-Bukhari)."},
+  fact:"Semasa Fathu Makkah, baginda menjatuhkan 360 berhala di sekeliling Kaabah sambil membaca: \"Kebenaran telah datang dan kebatilan telah lenyap\" (al-Isra': 81).",
+  src:"Sahih al-Bukhari (Kitab al-Maghazi); Ar-Rahiq al-Makhtum."
+}
+];
+
+/* ---------- Bank soalan tambahan (4 setiap bab) ---------- */
+const XQ1=[
+ [
+  {text:"Siapakah nama ayahanda Nabi Muhammad SAW?",opts:["Abdullah bin Abdul Muttalib","Abdul Muttalib bin Hasyim","Abu Talib","Hamzah"],a:0,ex:"Ayahanda baginda ialah Abdullah bin Abdul Muttalib, yang wafat sebelum baginda lahir."},
+  {text:"Tentera bergajah yang cuba memusnahkan Kaabah pada tahun kelahiran baginda dipimpin oleh siapa?",opts:["Abrahah","Abu Jahal","Abu Lahab","Najasyi"],a:0,ex:"Abrahah, gabenor Yaman. Peristiwa ini diceritakan dalam Surah al-Fil."},
+  {text:"Apakah gelaran yang diberikan penduduk Makkah kepada baginda sebelum kenabian?",opts:["Al-Amin","As-Siddiq","Al-Faruq","Saifullah"],a:0,ex:"Al-Amin, iaitu orang yang amanah. As-Siddiq ialah gelaran Abu Bakar, al-Faruq gelaran Umar, dan Saifullah gelaran Khalid al-Walid."},
+  {text:"Selepas datuknya wafat, siapakah yang memelihara baginda?",opts:["Abu Talib","Abu Lahab","Al-Abbas","Hamzah"],a:0,ex:"Bapa saudaranya, Abu Talib, memelihara dan melindungi baginda sehingga Abu Talib wafat."}
+ ],
+ [
+  {text:"Di gua manakah wahyu pertama diturunkan?",opts:["Gua Hira'","Gua Thur","Gua di Jabal Uhud","Gua di Taif"],a:0,ex:"Gua Hira', di Jabal an-Nur, Makkah. Gua Thur pula tempat baginda bersembunyi semasa Hijrah."},
+  {text:"Siapakah wanita pertama yang memeluk Islam?",opts:["Khadijah binti Khuwailid","Aisyah binti Abu Bakar","Fatimah az-Zahra'","Sumayyah binti Khayyat"],a:0,ex:"Khadijah, isteri baginda, ialah orang pertama yang beriman dengan risalah baginda."},
+  {text:"Siapakah raja Habsyah yang melindungi umat Islam yang berhijrah?",opts:["An-Najasyi","Heraklius","Kisra","Al-Muqauqis"],a:0,ex:"An-Najasyi (Negus), raja Habsyah yang terkenal adil. Heraklius ialah maharaja Rom, Kisra raja Parsi, dan al-Muqauqis pemerintah Mesir."},
+  {text:"Siapakah yang dikenali sebagai syahid pertama dalam Islam?",opts:["Sumayyah binti Khayyat","Bilal bin Rabah","Hamzah bin Abdul Muttalib","Mus'ab bin Umair"],a:0,ex:"Sumayyah, ibu kepada Ammar bin Yasir, dibunuh oleh Abu Jahal kerana enggan meninggalkan Islam."}
+ ],
+ [
+  {text:"Siapakah yang menemani baginda dalam perjalanan dakwah ke Taif?",opts:["Zaid bin Harithah","Abu Bakar as-Siddiq","Ali bin Abi Talib","Bilal bin Rabah"],a:0,ex:"Zaid bin Harithah. Dia cuba melindungi baginda daripada lontaran batu penduduk Taif."},
+  {text:"Selepas Bai'ah Aqabah Pertama, siapakah yang dihantar ke Yathrib untuk mengajar Islam?",opts:["Mus'ab bin Umair","Abdullah bin Mas'ud","Mu'adh bin Jabal","Salman al-Farisi"],a:0,ex:"Mus'ab bin Umair, duta pertama Islam. Ramai penduduk Yathrib memeluk Islam melalui dakwahnya."},
+  {text:"Tahun kewafatan Abu Talib dan Khadijah dikenali sebagai?",opts:["Amul Huzn","Amul Fil","Amul Wufud","Amul Jama'ah"],a:0,ex:"Amul Huzn, Tahun Kesedihan. Amul Fil ialah Tahun Gajah, dan Amul Wufud tahun rombongan kabilah datang ke Madinah (9H)."},
+  {text:"Isra' ialah perjalanan malam baginda dari Masjidil Haram ke mana?",opts:["Masjidil Aqsa","Masjid Nabawi","Masjid Quba","Bukit Safa"],a:0,ex:"Ke Masjidil Aqsa, seperti dalam Surah al-Isra' ayat 1. Mi'raj pula ialah naiknya baginda ke langit."}
+ ],
+ [
+  {text:"Siapakah yang tidur di katil baginda pada malam Hijrah?",opts:["Ali bin Abi Talib","Abu Bakar as-Siddiq","Umar al-Khattab","Zaid bin Harithah"],a:0,ex:"Ali bin Abi Talib. Dia juga ditugaskan memulangkan barang amanah orang Makkah yang disimpan pada baginda."},
+  {text:"Mengapa Asma' binti Abu Bakar digelar Zat an-Nitaqain?",opts:["Dia membelah tali pinggangnya kepada dua untuk mengikat bekal makanan","Dia mahir memanah","Dia menjaga unta semasa Hijrah","Dia menulis wahyu"],a:0,ex:"Dia membelah ikat pinggangnya (nitaq) untuk mengikat bekalan makanan dan minuman baginda (Sahih al-Bukhari)."},
+  {text:"Apakah masjid pertama yang dibina oleh baginda?",opts:["Masjid Quba","Masjid Nabawi","Masjid al-Qiblatain","Masjid al-Aqsa"],a:0,ex:"Masjid Quba, dibina semasa baginda singgah di Quba sebelum masuk ke Madinah."},
+  {text:"Di rumah siapakah baginda tinggal sementara Masjid Nabawi dibina?",opts:["Abu Ayyub al-Ansari","Sa'ad bin Mu'adh","Abu Bakar as-Siddiq","Uthman bin Affan"],a:0,ex:"Abu Ayyub al-Ansari, kerana unta baginda berhenti berhampiran rumahnya."}
+ ],
+ [
+  {text:"Apakah kiblat pertama umat Islam?",opts:["Baitul Maqdis","Kaabah","Masjid Quba","Bukit Safa"],a:0,ex:"Baitul Maqdis. Kiblat bertukar ke Kaabah pada tahun 2H (al-Baqarah: 144)."},
+  {text:"Perang Badar berlaku dalam bulan apa?",opts:["Ramadan","Syawal","Muharram","Zulhijjah"],a:0,ex:"17 Ramadan tahun 2H."},
+  {text:"Siapakah bapa saudara baginda yang syahid di Uhud?",opts:["Hamzah bin Abdul Muttalib","Al-Abbas bin Abdul Muttalib","Abu Talib","Ja'far bin Abi Talib"],a:0,ex:"Hamzah, digelar Asadullah (Singa Allah), syahid di Uhud pada tahun 3H."},
+  {text:"Perang Khandaq juga dikenali sebagai?",opts:["Perang Ahzab","Perang Hunain","Perang Tabuk","Perang Mu'tah"],a:0,ex:"Perang Ahzab, kerana pelbagai kabilah bersekutu (ahzab) menyerang Madinah. Surah al-Ahzab dinamakan sempena peristiwa ini."}
+ ],
+ [
+  {text:"Perjanjian Hudaibiyah menetapkan gencatan senjata selama berapa tahun?",opts:["10 tahun","2 tahun","5 tahun","20 tahun"],a:0,ex:"10 tahun. Quraisy kemudian melanggar perjanjian ini, lalu berlakunya Fathu Makkah."},
+  {text:"Selepas tiga panglima syahid di Mu'tah, siapakah yang memimpin tentera Islam?",opts:["Khalid al-Walid","Abu Ubaidah al-Jarrah","Amr bin al-As","Sa'ad bin Abi Waqqas"],a:0,ex:"Khalid al-Walid, yang berjaya mengundurkan tentera Islam dengan selamat."},
+  {text:"Berapakah anggaran tentera Islam semasa Fathu Makkah?",opts:["±10,000","±3,000","±313","±30,000"],a:0,ex:"Sekitar 10,000. Angka 313 ialah Badar, 3,000 Mu'tah, dan 30,000 Tabuk."},
+  {text:"Di rumah siapakah Rasulullah SAW wafat?",opts:["Aisyah binti Abu Bakar","Hafsah binti Umar","Ummu Salamah","Fatimah az-Zahra'"],a:0,ex:"Di rumah Aisyah, di sebelah Masjid Nabawi. Baginda dimakamkan di situ."}
+ ]
+];
+function pickQ(i){const all=[CH[i].q].concat(EXTRA_Q[i]||[]);return all[Math.floor(Math.random()*all.length)];}
+
+/* ---------- Gulungan ilmu (12, dua bagi setiap kawasan bab) ---------- */
+const SC1=[
+ {f:"Nama Muhammad bermaksud orang yang banyak dipuji.",src:"Ar-Rahiq al-Makhtum."},
+ {f:"Semasa muda, baginda pernah mengembala kambing penduduk Makkah dengan upah beberapa qirat.",src:"Sahih al-Bukhari, Kitab al-Ijarah."},
+ {f:"Waraqah bin Naufal, sepupu Khadijah, memberitahu baginda bahawa yang datang di Gua Hira' ialah Namus yang pernah datang kepada Nabi Musa.",src:"Sahih al-Bukhari, Kitab Bad' al-Wahy."},
+ {f:"Wahyu pertama turun pada bulan Ramadan, bulan diturunkan al-Quran.",src:"Surah al-Baqarah: 185; Ar-Rahiq al-Makhtum."},
+ {f:"Dokumen pemulauan Bani Hasyim yang digantung di Kaabah dilaporkan dimakan anai-anai, kecuali kalimah yang menyebut nama Allah.",src:"Sirah Ibn Hisham; Ar-Rahiq al-Makhtum."},
+ {f:"Dalam perjalanan pulang dari Taif, seorang hamba bernama 'Addas memberi baginda setangkai anggur, kemudian memeluk Islam.",src:"Sirah Ibn Hisham; Ar-Rahiq al-Makhtum."},
+ {f:"Pemandu jalan semasa Hijrah ialah Abdullah bin Uraiqit. Dia belum Islam ketika itu, tetapi dipercayai.",src:"Sahih al-Bukhari, Bab Hijrah; Ar-Rahiq al-Makhtum."},
+ {f:"Al-Bara' bin 'Azib berkata dia tidak pernah melihat penduduk Madinah segembira hari ketibaan baginda.",src:"Sahih al-Bukhari, Kitab Manaqib al-Ansar."},
+ {f:"Dalam Perang Badar, tentera Islam hanya ada sekitar dua ekor kuda dan 70 ekor unta, digunakan bergilir-gilir.",src:"Ar-Rahiq al-Makhtum."},
+ {f:"Masjid Nabawi yang awal dibina dengan dinding bata tanah, tiang batang tamar dan bumbung pelepah tamar.",src:"Sahih al-Bukhari, Kitab as-Salah."},
+ {f:"Semasa Fathu Makkah, Bilal bin Rabah naik ke atas Kaabah dan melaungkan azan.",src:"Sirah Ibn Hisham; Ar-Rahiq al-Makhtum."},
+ {f:"Haji Wada' disertai lebih 100,000 orang menurut catatan ahli sirah.",src:"Ar-Rahiq al-Makhtum."}
+];
+
+/* ---------- Tahap 2 (Sederhana): Medan Ghazwah ---------- */
+const CH2 = [
+{
+  name:"Perang Badar al-Kubra", short:"Badar", place:"Badar, barat daya Madinah", years:"17 Ramadan 2H (624M)",
+  intro:[
+    "Ini Badar, sebuah kawasan berair di laluan kafilah antara Makkah dan Syam. Di sinilah, pada bulan Ramadan tahun 2H, ±313 orang Muslim berdepan ±1,000 tentera Quraisy.",
+    "Tentera Islam keluar bukan untuk berperang, tetapi untuk menahan kafilah dagang Quraisy. Allah menentukan pertemuan yang lain."
+  ],
+  ev:[
+    {t:"Kafilah Abu Sufyan menukar laluan", w:"Ramadan 2H", d:"Kafilah dagang Quraisy dari Syam menukar laluan ke arah pantai, dan Abu Sufyan menghantar utusan ke Makkah meminta bantuan. Quraisy keluar dengan ±1,000 tentera."},
+    {t:"Syura: Muhajirin dan Ansar menyatakan sokongan", w:"Dalam perjalanan ke Badar", d:"Al-Miqdad bin al-Aswad dari Muhajirin dan pemimpin Ansar menyatakan mereka akan tetap bersama baginda."},
+    {t:"Al-Hubab mencadangkan kedudukan di telaga", w:"Setibanya di Badar", d:"Tentera Islam berkhemah di telaga yang paling hampir dengan musuh dan menutup telaga-telaga yang lain."},
+    {t:"Perang tanding (mubarazah)", w:"Pagi 17 Ramadan 2H", d:"Hamzah, Ali dan Ubaidah bin al-Harith menyahut cabaran Utbah, Syaibah dan al-Walid bin Utbah."},
+    {t:"Kemenangan tentera Islam", w:"17 Ramadan 2H", d:"70 orang Quraisy terbunuh, termasuk Abu Jahal, dan 70 orang ditawan. 14 orang Muslim syahid."},
+    {t:"Tawanan ditebus", w:"Selepas perang", d:"Sebahagian tawanan ditebus dengan harta. Tawanan yang pandai membaca diminta mengajar anak-anak Ansar membaca dan menulis."}
+  ],
+  bs:[
+    {s:"Tentera Islam di Badar lebih ramai daripada tentera Quraisy.",a:false,ex:"Salah. Tentera Islam ±313 orang, manakala Quraisy ±1,000."},
+    {s:"Hujan turun pada malam sebelum pertempuran dan meneguhkan pijakan tentera Islam.",a:true,ex:"Betul. Ini disebut dalam Surah al-Anfal ayat 11."},
+    {s:"Kafilah Abu Sufyan berjaya ditawan oleh tentera Islam di Badar.",a:false,ex:"Salah. Kafilah itu terlepas kerana Abu Sufyan menukar laluan ke arah pantai."},
+    {s:"Abu Jahal terbunuh dalam Perang Badar.",a:true,ex:"Betul. Abu Jahal (Amr bin Hisyam) terbunuh di Badar (Sahih al-Bukhari)."},
+    {s:"Allah menyebut bantuan seribu malaikat dalam Surah al-Anfal.",a:true,ex:"Betul. Surah al-Anfal ayat 9."}
+  ],
+  who:[
+    {clues:["Aku dari kalangan Ansar.","Di Badar, aku bertanya sama ada kedudukan tentera itu wahyu atau strategi perang.","Aku mencadangkan tentera berkhemah di telaga yang paling hampir dengan musuh."],
+     opts:["Al-Hubab bin al-Mundhir","Sa'ad bin Mu'adh","Abu Ayyub al-Ansari","Mus'ab bin Umair"],a:0,
+     ex:"Al-Hubab bin al-Mundhir. Baginda menerima cadangannya. Kisah ini dicatat dalam Sirah Ibn Hisham dan Ar-Rahiq al-Makhtum."},
+    {clues:["Aku antara Muhajirin yang terawal.","Aku antara dua orang tentera Islam yang menunggang kuda di Badar.","Dalam syura sebelum Badar, aku berkata kami tidak akan berkata seperti kaum Musa: \"Pergilah engkau dan Tuhanmu berperang.\""],
+     opts:["Al-Miqdad bin al-Aswad","Az-Zubair bin al-Awwam","Abu Bakar as-Siddiq","Bilal bin Rabah"],a:0,
+     ex:"Al-Miqdad bin al-Aswad. Kata-katanya diriwayatkan dalam Sahih al-Bukhari. Menurut Ar-Rahiq al-Makhtum, penunggang kuda yang seorang lagi ialah az-Zubair bin al-Awwam."}
+  ],
+  map:{art:"badar", q:"Tentera Islam baru tiba di Badar. Seorang sahabat mencadangkan kedudukan yang lebih baik. Di mana?",
+    spots:[{l:"Di belakang, jauh dari telaga",x:70,y:182},{l:"Di telaga yang paling hampir dengan musuh",x:172,y:78},{l:"Di atas bukit pasir di tepi lembah",x:290,y:150},{l:"Berpatah balik ke arah Madinah",x:250,y:204}],
+    a:1, ex:"Al-Hubab bin al-Mundhir mencadangkan tentera berkhemah di telaga yang paling hampir dengan musuh, membina kolam air, dan menutup telaga-telaga lain. Baginda menerima cadangan itu (Sirah Ibn Hisham; Ar-Rahiq al-Makhtum)."},
+  q:{text:"Surah manakah yang banyak menyentuh peristiwa Perang Badar?",
+     opts:["Al-Anfal","Al-Ahzab","Al-Fath","Al-Kahfi"],a:0,
+     ex:"Surah al-Anfal. Antaranya ayat 9 tentang bantuan malaikat, dan ayat 11 tentang hujan dan rasa mengantuk yang menenangkan."},
+  fact:"Malam sebelum Badar, Allah menurunkan rasa mengantuk sebagai ketenangan, dan hujan yang menyucikan serta meneguhkan pijakan tentera Islam di atas pasir.",
+  src:"Surah al-Anfal: 11; Ar-Rahiq al-Makhtum."
+},
+{
+  name:"Perang Uhud", short:"Uhud", place:"Jabal Uhud, utara Madinah", years:"Syawal 3H (625M)",
+  intro:[
+    "Setahun selepas Badar, Quraisy datang dengan ±3,000 tentera untuk membalas dendam. Mereka berkhemah berhampiran Jabal Uhud, di utara Madinah.",
+    "Di sini kita belajar satu pengajaran besar: apa yang berlaku bila arahan pemimpin ditinggalkan."
+  ],
+  ev:[
+    {t:"Syura: keluar menghadapi Quraisy di luar kota", w:"Syawal 3H", d:"Ramai sahabat, terutama yang tidak sempat menyertai Badar, mahu keluar menghadapi musuh. Baginda memakai baju besi dan keluar."},
+    {t:"Abdullah bin Ubay menarik diri", w:"Dalam perjalanan ke Uhud", d:"Dia berpatah balik bersama ±300 orang. Tentera Islam tinggal ±700 berdepan ±3,000 tentera Quraisy."},
+    {t:"50 pemanah ditempatkan di Bukit 'Ainain", w:"Sebelum pertempuran", d:"Di bawah pimpinan Abdullah bin Jubair, dengan arahan tegas supaya tidak meninggalkan tempat itu."},
+    {t:"Tentera Islam menguasai awal pertempuran", w:"Awal pertempuran", d:"Barisan Quraisy berundur dan panji mereka jatuh."},
+    {t:"Pemanah turun, Khalid al-Walid menyerang dari belakang", w:"Pertengahan pertempuran", d:"Sebahagian besar pemanah meninggalkan bukit kerana menyangka perang sudah tamat. Pasukan berkuda Quraisy pimpinan Khalid (sebelum dia memeluk Islam) memusing ke belakang."},
+    {t:"Mengejar Quraisy hingga Hamra' al-Asad", w:"Keesokan hari", d:"Baginda membawa tentera yang masih cedera keluar semula, menunjukkan umat Islam masih kuat. Quraisy tidak berpatah balik."}
+  ],
+  bs:[
+    {s:"Para pemanah diarahkan supaya tidak meninggalkan bukit walau apa pun yang berlaku.",a:true,ex:"Betul. Arahan ini diriwayatkan dalam Sahih al-Bukhari."},
+    {s:"Khalid al-Walid berjuang di pihak Islam dalam Perang Uhud.",a:false,ex:"Salah. Ketika Uhud, Khalid masih di pihak Quraisy. Dia memeluk Islam beberapa tahun kemudian."},
+    {s:"Abdullah bin Ubay berpatah balik bersama ±300 orang sebelum pertempuran.",a:true,ex:"Betul. Tentera Islam berkurang daripada ±1,000 kepada ±700."},
+    {s:"Hamzah bin Abdul Muttalib syahid dalam Perang Badar.",a:false,ex:"Salah. Hamzah syahid di Uhud. Di Badar, dia antara tiga sahabat dalam perang tanding."},
+    {s:"Keesokan harinya, tentera Islam keluar mengejar Quraisy hingga Hamra' al-Asad.",a:true,ex:"Betul. Ini menunjukkan umat Islam belum patah semangat."}
+  ],
+  who:[
+    {clues:["Aku pernah dihantar ke Yathrib sebagai pendakwah sebelum Hijrah.","Di Uhud, aku memegang panji tentera Islam.","Aku syahid di Uhud, dan kain kafanku tidak cukup untuk menutup seluruh jasadku."],
+     opts:["Mus'ab bin Umair","Hamzah bin Abdul Muttalib","Abdullah bin Jubair","Sa'ad bin Abi Waqqas"],a:0,
+     ex:"Mus'ab bin Umair. Kisah kain kafannya diriwayatkan dalam Sahih al-Bukhari."},
+    {clues:["Aku dari kalangan Ansar.","Aku mengetuai 50 orang pemanah di Uhud.","Aku tetap di atas bukit bersama beberapa orang ketika yang lain turun, dan aku syahid di situ."],
+     opts:["Abdullah bin Jubair","Khalid al-Walid","Abu Dujanah","Talhah bin Ubaidillah"],a:0,
+     ex:"Abdullah bin Jubair. Kisah pemanah Uhud diriwayatkan dalam Sahih al-Bukhari (hadis al-Bara' bin 'Azib)."}
+  ],
+  map:{art:"uhud", q:"Baginda menempatkan 50 orang pemanah untuk melindungi tentera daripada pasukan berkuda musuh. Di mana?",
+    spots:[{l:"Di puncak Jabal Uhud",x:150,y:40},{l:"Di bukit kecil 'Ainain, di sisi tentera",x:62,y:118},{l:"Di barisan paling hadapan",x:190,y:150},{l:"Di dalam kota Madinah",x:286,y:202}],
+    a:1, ex:"Di Bukit 'Ainain, yang kini dikenali sebagai Jabal ar-Rumat. Dari situ pemanah melindungi sisi dan belakang tentera daripada pasukan berkuda Quraisy. Mereka diarahkan tidak meninggalkan tempat itu walau apa pun berlaku (Sahih al-Bukhari)."},
+  q:{text:"Berapakah bilangan pemanah yang ditempatkan di atas bukit dalam Perang Uhud?",
+     opts:["50 orang","30 orang","100 orang","300 orang"],a:0,
+     ex:"50 orang pemanah di bawah pimpinan Abdullah bin Jubair (Sahih al-Bukhari)."},
+  fact:"Rasulullah SAW berpesan kepada para pemanah: walaupun kamu melihat burung menyambar kami, jangan tinggalkan tempat kamu sehingga aku menghantar utusan kepada kamu.",
+  src:"Sahih al-Bukhari, Kitab al-Jihad (hadis al-Bara' bin 'Azib)."
+},
+{
+  name:"Perang Khandaq (Ahzab)", short:"Khandaq", place:"Utara Madinah", years:"5H (627M)",
+  intro:[
+    "Kali ini musuh tidak datang seorang diri. Quraisy, Ghatafan dan beberapa kabilah lain bersekutu. Mereka digelar al-Ahzab, golongan-golongan yang bersekutu.",
+    "Madinah tidak boleh menang dengan jumlah. Ia perlu menang dengan akal, kesabaran dan pertolongan Allah."
+  ],
+  ev:[
+    {t:"Berita pakatan Ahzab sampai ke Madinah", w:"5H", d:"Quraisy, Ghatafan dan kabilah lain bersekutu, didorong oleh pemimpin Bani Nadhir yang telah diusir dari Madinah."},
+    {t:"Parit digali di utara Madinah", w:"Sebelum Ahzab tiba", d:"Atas cadangan Salman al-Farisi. Baginda sendiri turut menggali dan mengangkat tanah bersama para sahabat (Sahih al-Bukhari)."},
+    {t:"Ahzab tiba dan mengepung Madinah", w:"±10,000 tentera", d:"Mereka terkejut melihat parit, satu taktik yang belum dikenali orang Arab ketika itu. Kepungan berlangsung berminggu-minggu."},
+    {t:"Nu'aim bin Mas'ud memecahbelahkan Ahzab", w:"Semasa kepungan", d:"Dia baru memeluk Islam secara rahsia, lalu menimbulkan syak wasangka antara Quraisy, Ghatafan dan Bani Quraizah."},
+    {t:"Angin kencang, Ahzab berundur", w:"Akhir kepungan", d:"Angin sejuk yang kencang menerbangkan khemah dan memadamkan api mereka (al-Ahzab: 9)."}
+  ],
+  bs:[
+    {s:"Parit digali atas cadangan Salman al-Farisi.",a:true,ex:"Betul. Taktik parit biasa digunakan di Parsi, negeri asal Salman."},
+    {s:"Parit digali mengelilingi seluruh kota Madinah.",a:false,ex:"Salah. Parit digali di bahagian utara yang terbuka. Bahagian lain sudah terlindung oleh batu lava, kebun tamar dan rumah."},
+    {s:"Allah menghantar angin kencang ke atas tentera Ahzab.",a:true,ex:"Betul. Surah al-Ahzab ayat 9 menyebut angin dan tentera yang tidak kelihatan."},
+    {s:"Tentera Ahzab berjaya memasuki kota Madinah.",a:false,ex:"Salah. Mereka gagal menyeberangi parit dan akhirnya berundur."},
+    {s:"Tentera Islam ketika itu lebih kurang 3,000 orang.",a:true,ex:"Betul. Ahzab pula lebih kurang 10,000 orang."}
+  ],
+  who:[
+    {clues:["Aku berasal dari Parsi.","Aku mengembara mencari agama yang benar, hingga pernah menjadi hamba di Madinah.","Aku mencadangkan supaya parit digali."],
+     opts:["Salman al-Farisi","Nu'aim bin Mas'ud","Hudhaifah bin al-Yaman","Ammar bin Yasir"],a:0,
+     ex:"Salman al-Farisi. Kisah perjalanannya mencari kebenaran dicatat dalam Musnad Ahmad dan Sirah Ibn Hisham."},
+    {clues:["Aku dari kabilah Ghatafan.","Aku memeluk Islam secara rahsia semasa kepungan Khandaq.","Aku menggunakan helah untuk menimbulkan syak wasangka antara Quraisy, Ghatafan dan Bani Quraizah."],
+     opts:["Nu'aim bin Mas'ud","Salman al-Farisi","Abu Sufyan bin Harb","Hudhaifah bin al-Yaman"],a:0,
+     ex:"Nu'aim bin Mas'ud. Kisahnya dicatat dalam Sirah Ibn Hisham dan Ar-Rahiq al-Makhtum."},
+    {clues:["Aku dikenali sebagai penyimpan rahsia Rasulullah SAW.","Pada satu malam yang sangat sejuk semasa Khandaq, aku diutus ke khemah musuh.","Aku dipesan supaya tidak mengejutkan mereka, hanya membawa pulang berita."],
+     opts:["Hudhaifah bin al-Yaman","Nu'aim bin Mas'ud","Az-Zubair bin al-Awwam","Salman al-Farisi"],a:0,
+     ex:"Hudhaifah bin al-Yaman. Kisahnya diriwayatkan dalam Sahih Muslim."}
+  ],
+  map:{art:"khandaq", q:"Madinah akan dikepung. Di sebelah mana parit perlu digali?",
+    spots:[{l:"Timur",x:292,y:110},{l:"Selatan",x:170,y:200},{l:"Utara",x:170,y:30},{l:"Barat",x:48,y:110}],
+    a:2, ex:"Utara. Bahagian lain Madinah sudah terlindung oleh harrah (kawasan batu lava yang sukar dilalui), kebun tamar yang rapat dan binaan rumah. Kawasan utara yang terbuka itulah yang digali parit (Ar-Rahiq al-Makhtum)."},
+  q:{text:"Berapakah anggaran tentera Ahzab yang mengepung Madinah?",
+     opts:["±10,000","±3,000","±1,000","±30,000"],a:0,
+     ex:"Sekitar 10,000 orang. Tentera Islam pula sekitar 3,000."},
+  fact:"Selepas Ahzab berundur, baginda bersabda: \"Sekarang kita yang akan pergi kepada mereka, dan mereka tidak lagi akan datang menyerang kita.\"",
+  src:"Sahih al-Bukhari, Kitab al-Maghazi."
+},
+{
+  name:"Pembukaan Khaibar", short:"Khaibar", place:"Khaibar, utara Madinah", years:"Muharram 7H (628M)",
+  intro:[
+    "Selepas Perjanjian Hudaibiyah, Quraisy tidak lagi menyerang. Tetapi Khaibar, kawasan berbenteng di utara Madinah, menjadi pusat pakatan menentang umat Islam.",
+    "Khaibar penuh dengan kebun kurma dan benteng batu. Satu demi satu benteng itu dibuka."
+  ],
+  ev:[
+    {t:"Tentera bertolak ke Khaibar", w:"Muharram 7H", d:"±1,400 tentera, iaitu mereka yang bersama baginda di Hudaibiyah."},
+    {t:"Benteng-benteng Na'im dikepung", w:"Peringkat awal", d:"Khaibar mempunyai beberapa kelompok benteng. Na'im antara yang pertama diserang."},
+    {t:"Panji diserahkan kepada Ali bin Abi Talib", w:"Semasa kepungan", d:"Baginda bersabda akan menyerahkan panji kepada lelaki yang mencintai Allah dan Rasul-Nya, dan dicintai oleh Allah dan Rasul-Nya (Sahih al-Bukhari dan Muslim)."},
+    {t:"Benteng terakhir menyerah, perjanjian separuh hasil", w:"Akhir kepungan", d:"Penduduk Khaibar dibenarkan terus mengusahakan kebun dengan memberi separuh hasilnya (Sahih al-Bukhari)."}
+  ],
+  bs:[
+    {s:"Khaibar terletak di utara Madinah.",a:true,ex:"Betul. Khaibar terletak di utara Madinah, di laluan ke Syam."},
+    {s:"Khaibar dibuka sebelum Perjanjian Hudaibiyah.",a:false,ex:"Salah. Hudaibiyah berlaku pada Zulkaedah 6H, manakala Khaibar pada Muharram 7H."},
+    {s:"Khaibar mempunyai beberapa kelompok benteng yang dibuka satu demi satu.",a:true,ex:"Betul. Antaranya kelompok benteng Na'im, yang antara terawal diserang."},
+    {s:"Penduduk Khaibar dibenarkan terus mengusahakan tanah dengan bayaran separuh hasil.",a:true,ex:"Betul. Ini diriwayatkan dalam Sahih al-Bukhari."},
+    {s:"Panji di Khaibar diserahkan kepada Khalid al-Walid.",a:false,ex:"Salah. Panji diserahkan kepada Ali bin Abi Talib."}
+  ],
+  who:[
+    {clues:["Aku antara yang terawal memeluk Islam ketika masih kecil.","Pada hari Khaibar, mataku sakit, lalu sembuh selepas didoakan oleh baginda.","Panji Khaibar diserahkan kepadaku."],
+     opts:["Ali bin Abi Talib","Umar al-Khattab","Abu Bakar as-Siddiq","Az-Zubair bin al-Awwam"],a:0,
+     ex:"Ali bin Abi Talib. Kisah panji Khaibar diriwayatkan dalam Sahih al-Bukhari dan Muslim."},
+    {clues:["Aku sepupu Rasulullah SAW dan abang kepada Ali.","Aku antara Muslimin yang berhijrah ke Habsyah, dan berucap di hadapan Raja Najasyi.","Aku tiba dari Habsyah ketika Khaibar baru dibuka."],
+     opts:["Ja'far bin Abi Talib","Uthman bin Affan","Abu Musa al-Asy'ari","Aqil bin Abi Talib"],a:0,
+     ex:"Ja'far bin Abi Talib. Ketibaannya di Khaibar diriwayatkan dalam Sahih al-Bukhari, manakala ucapannya di hadapan Najasyi dicatat dalam Sirah Ibn Hisham."}
+  ],
+  q:{text:"Baginda bersabda akan menyerahkan panji kepada lelaki yang mencintai Allah dan Rasul-Nya. Siapakah dia?",
+     opts:["Ali bin Abi Talib","Umar al-Khattab","Abu Bakar as-Siddiq","Khalid al-Walid"],a:0,
+     ex:"Ali bin Abi Talib. Hadis ini diriwayatkan dalam Sahih al-Bukhari dan Muslim."},
+  fact:"Ja'far bin Abi Talib dan Muslimin yang berhijrah ke Habsyah, bersama Abu Musa al-Asy'ari dan kaumnya, tiba menemui baginda ketika Khaibar baru dibuka.",
+  src:"Sahih al-Bukhari, Kitab al-Maghazi (hadis Abu Musa al-Asy'ari)."
+},
+{
+  name:"Perang Hunain", short:"Hunain", place:"Lembah Hunain, antara Makkah dan Taif", years:"Syawal 8H (630M)",
+  intro:[
+    "Makkah baru dibuka. Tetapi kabilah Hawazin dan Thaqif tidak mahu tunduk. Mereka berhimpun untuk menyerang.",
+    "Tentera Islam kini paling ramai pernah dikumpul, ±12,000. Di lembah Hunain, mereka belajar bahawa jumlah yang ramai tidak menjamin kemenangan."
+  ],
+  ev:[
+    {t:"Fathu Makkah", w:"Ramadan 8H", d:"Selepas Makkah dibuka, kabilah Hawazin dan Thaqif bersiap untuk menyerang."},
+    {t:"Hawazin berhimpun di Autas", w:"Syawal 8H", d:"Malik bin 'Auf membawa bersama wanita, kanak-kanak dan ternakan supaya tenteranya tidak lari."},
+    {t:"Serangan hendap di lembah Hunain", w:"Awal pagi", d:"Musuh menyerang dari celah-celah lembah. Ramai tentera Islam bertempiaran, tetapi baginda tetap di tempatnya."},
+    {t:"Al-Abbas menyeru para sahabat", w:"Di tengah kekacauan", d:"Dengan suaranya yang lantang, al-Abbas memanggil para sahabat. Mereka kembali dan keadaan berubah (Sahih Muslim)."},
+    {t:"Kepungan Taif", w:"Selepas Hunain", d:"Sisa tentera Thaqif berlindung dalam kota Taif. Kepungan ditamatkan tanpa membuka kota itu."},
+    {t:"Harta rampasan dibahagikan di Ji'ranah", w:"Selepas Taif", d:"Baginda memberi bahagian besar kepada pemimpin yang baru memeluk Islam, lalu menenangkan hati kaum Ansar dengan ucapan yang menyentuh hati."}
+  ],
+  bs:[
+    {s:"Perang Hunain berlaku selepas Fathu Makkah.",a:true,ex:"Betul. Fathu Makkah pada Ramadan 8H, Hunain pada Syawal 8H."},
+    {s:"Tentera Islam di Hunain hanya ±3,000 orang.",a:false,ex:"Salah. Tentera Islam ±12,000 orang, jumlah terbesar ketika itu."},
+    {s:"Surah at-Taubah menyebut sebahagian tentera Islam berbangga dengan jumlah mereka yang ramai di Hunain.",a:true,ex:"Betul. Surah at-Taubah ayat 25."},
+    {s:"Musuh menyerang hendap dari celah-celah lembah pada awal pagi.",a:true,ex:"Betul. Serangan itu menyebabkan ramai tentera Islam bertempiaran pada mulanya."},
+    {s:"Hunain ialah peperangan menentang tentera Rom.",a:false,ex:"Salah. Hunain menentang kabilah Hawazin dan Thaqif. Ekspedisi menentang Rom ialah Mu'tah dan Tabuk."}
+  ],
+  who:[
+    {clues:["Aku bapa saudara Rasulullah SAW.","Aku terkenal dengan suara yang lantang.","Di Hunain, aku menyeru para sahabat supaya kembali berkumpul."],
+     opts:["Al-Abbas bin Abdul Muttalib","Hamzah bin Abdul Muttalib","Abu Talib","Abu Lahab"],a:0,
+     ex:"Al-Abbas bin Abdul Muttalib. Kisahnya diriwayatkan dalam Sahih Muslim. Hamzah sudah syahid di Uhud dan Abu Talib wafat sebelum Hijrah."},
+    {clues:["Aku pemimpin kabilah Hawazin.","Aku membawa wanita, kanak-kanak dan ternakan ke medan supaya tenteraku tidak lari.","Selepas Hunain, aku memeluk Islam."],
+     opts:["Malik bin 'Auf an-Nasri","Durayd bin as-Simmah","Abu Sufyan bin Harb","Urwah bin Mas'ud"],a:0,
+     ex:"Malik bin 'Auf an-Nasri. Kisahnya dicatat dalam Sirah Ibn Hisham dan Ar-Rahiq al-Makhtum."}
+  ],
+  map:{art:"hunain", q:"Tentera Islam turun ke lembah Hunain sebelum matahari terbit. Di mana tentera Hawazin menanti?",
+    spots:[{l:"Di tengah laluan, berdepan secara terbuka",x:170,y:112},{l:"Jauh di hujung lembah, di padang terbuka",x:170,y:26},{l:"Di belakang tentera Islam, di luar lembah",x:170,y:224},{l:"Di celah dan lereng bukit, di kiri kanan lembah",x:72,y:92}],
+    a:3, ex:"Hawazin dan Thaqif bersembunyi di celah-celah dan lereng lembah Hunain, lalu menyerang ketika tentera Islam sedang turun dalam keadaan masih gelap (Ar-Rahiq al-Makhtum)."},
+  q:{text:"Berapakah anggaran tentera Islam dalam Perang Hunain?",
+     opts:["±12,000","±3,000","±313","±30,000"],a:0,
+     ex:"Sekitar 12,000: 10,000 yang membuka Makkah dan sekitar 2,000 penduduk Makkah."},
+  fact:"Ketika ramai tentera bertempiaran, baginda tetap di atas baghal putihnya sambil berkata: \"Akulah Nabi, bukan dusta. Akulah anak (cucu) Abdul Muttalib.\"",
+  src:"Sahih al-Bukhari dan Sahih Muslim (hadis al-Bara' bin 'Azib)."
+},
+{
+  name:"Ekspedisi Tabuk", short:"Tabuk", place:"Tabuk, sempadan Syam", years:"Rejab 9H (630M)",
+  intro:[
+    "Berita sampai bahawa Rom sedang bersiap di utara. Baginda menyeru umat Islam keluar, walaupun dalam musim panas, jarak yang jauh dan ketika buah kurma hampir masak.",
+    "Di Tabuk, ujian sebenar bukan di medan. Ia di dalam hati: siapa yang sanggup berkorban, dan siapa yang jujur."
+  ],
+  ev:[
+    {t:"Seruan persiapan ke Tabuk", w:"Rejab 9H", d:"Berita Rom bersiap di utara. Musim panas, jarak jauh dan buah kurma hampir masak menjadikannya ujian yang berat."},
+    {t:"Sumbangan untuk Jaisy al-'Usrah", w:"Sebelum bertolak", d:"Uthman bin Affan membiayai sebahagian besar kelengkapan tentera. Ramai sahabat lain turut menyumbang mengikut kemampuan."},
+    {t:"Melalui al-Hijr, tempat kaum Thamud", w:"Dalam perjalanan", d:"Baginda melarang tentera menggunakan air perigi di situ dan menyuruh mereka melaluinya dengan rasa takut kepada Allah (Sahih al-Bukhari)."},
+    {t:"Berkhemah di Tabuk ±20 hari", w:"Di Tabuk", d:"Tentera Rom tidak muncul. Beberapa pemimpin di kawasan sempadan datang berdamai dan bersetuju membayar jizyah."},
+    {t:"Pulang ke Madinah, kisah tiga sahabat", w:"Selepas Tabuk", d:"Ka'b bin Malik, Hilal bin Umayyah dan Murarah bin ar-Rabi' mengaku jujur mereka tertinggal tanpa uzur. Taubat mereka diterima selepas 50 hari (at-Taubah: 118)."}
+  ],
+  bs:[
+    {s:"Tabuk ialah ekspedisi menentang tentera Rom.",a:true,ex:"Betul. Ia ekspedisi ketenteraan terakhir yang baginda sertai."},
+    {s:"Berlaku pertempuran besar di Tabuk.",a:false,ex:"Salah. Tentera Rom tidak muncul, dan tiada pertempuran berlaku."},
+    {s:"Tentera ke Tabuk digelar Jaisy al-'Usrah, iaitu tentera masa sukar.",a:true,ex:"Betul. Surah at-Taubah ayat 117 menyebut \"saat kesukaran\"."},
+    {s:"Ka'b bin Malik antara tiga sahabat yang tertinggal tanpa uzur.",a:true,ex:"Betul. Kisahnya yang panjang diriwayatkan sendiri olehnya dalam Sahih al-Bukhari."},
+    {s:"Ekspedisi Tabuk berlaku pada musim sejuk.",a:false,ex:"Salah. Ia berlaku dalam musim panas yang terik."}
+  ],
+  who:[
+    {clues:["Aku dari kalangan Ansar dan seorang penyair.","Aku tertinggal daripada ekspedisi Tabuk tanpa uzur.","Aku memilih untuk berkata benar, dan taubatku diterima selepas 50 hari."],
+     opts:["Ka'b bin Malik","Hassan bin Thabit","Abdullah bin Rawahah","Abu Khaithamah"],a:0,
+     ex:"Ka'b bin Malik. Kisahnya diriwayatkan dalam Sahih al-Bukhari, dan disebut dalam at-Taubah ayat 118."},
+    {clues:["Aku menantu Rasulullah SAW, berkahwin dengan dua orang puteri baginda.","Aku seorang peniaga yang kaya.","Aku membiayai sebahagian besar kelengkapan Jaisy al-'Usrah."],
+     opts:["Uthman bin Affan","Abdul Rahman bin 'Auf","Abu Bakar as-Siddiq","Talhah bin Ubaidillah"],a:0,
+     ex:"Uthman bin Affan. Disebut dalam Sahih al-Bukhari, Kitab Fadha'il as-Sahabah."}
+  ],
+  q:{text:"Ekspedisi Tabuk ialah persiapan menentang kuasa apa?",
+     opts:["Rom (Byzantine)","Parsi","Quraisy","Hawazin"],a:0,
+     ex:"Empayar Rom (Byzantine), yang dilaporkan sedang bersiap di sempadan Syam."},
+  fact:"Ka'b bin Malik berkata kejujurannya yang menyelamatkannya. Selepas kisahnya, turun ayat: \"Wahai orang-orang yang beriman, bertakwalah kepada Allah dan hendaklah kamu bersama orang-orang yang benar.\"",
+  src:"Sahih al-Bukhari, Kitab al-Maghazi; Surah at-Taubah: 117-119."
+}
+];
+
+const XQ2=[
+ [
+  {text:"Berapakah anggaran tentera Islam dalam Perang Badar?",opts:["±313","±1,000","±3,000","±700"],a:0,ex:"Sekitar 313 orang, dengan hanya sekitar 2 ekor kuda dan 70 ekor unta."},
+  {text:"Pemimpin Quraisy manakah yang terbunuh dalam Perang Badar?",opts:["Abu Jahal","Abu Sufyan","Abu Lahab","Khalid al-Walid"],a:0,ex:"Abu Jahal. Dua pemuda Ansar yang menyerangnya (Sahih al-Bukhari). Abu Sufyan membawa kafilah dan memeluk Islam semasa Fathu Makkah, manakala Abu Lahab tidak menyertai Badar."},
+  {text:"Apakah tebusan bagi sebahagian tawanan Badar yang pandai membaca?",opts:["Mengajar anak-anak Ansar membaca dan menulis","Menggali telaga di Madinah","Menjaga unta tentera Islam","Menyertai tentera Islam"],a:0,ex:"Mereka diminta mengajar anak-anak Ansar membaca dan menulis (Musnad Ahmad; Ar-Rahiq al-Makhtum)."},
+  {text:"Mengapa tentera Islam keluar dari Madinah pada asalnya?",opts:["Untuk menahan kafilah dagang Quraisy","Untuk menyerang kota Makkah","Untuk menunaikan umrah","Untuk berdagang di Syam"],a:0,ex:"Untuk menahan kafilah dagang Quraisy pimpinan Abu Sufyan yang pulang dari Syam. Kafilah itu terlepas, lalu berlaku pertemuan dengan tentera Quraisy."}
+ ],
+ [
+  {text:"Siapakah yang mengetuai pasukan pemanah dalam Perang Uhud?",opts:["Abdullah bin Jubair","Khalid al-Walid","Hamzah bin Abdul Muttalib","Az-Zubair bin al-Awwam"],a:0,ex:"Abdullah bin Jubair (Sahih al-Bukhari)."},
+  {text:"Siapakah yang membunuh Hamzah dalam Perang Uhud?",opts:["Wahsyi bin Harb","Abu Sufyan","Ikrimah bin Abu Jahal","Khalid al-Walid"],a:0,ex:"Wahsyi bin Harb. Dia kemudian memeluk Islam (Sahih al-Bukhari)."},
+  {text:"Siapakah yang membawa panji tentera Islam di Uhud dan syahid?",opts:["Mus'ab bin Umair","Ali bin Abi Talib","Bilal bin Rabah","Zaid bin Harithah"],a:0,ex:"Mus'ab bin Umair, duta pertama Islam ke Yathrib."},
+  {text:"Apakah punca keadaan berubah dalam Perang Uhud?",opts:["Sebahagian pemanah meninggalkan bukit sebelum diizinkan","Tentera Islam kehabisan air","Hujan lebat turun","Tentera Rom datang membantu Quraisy"],a:0,ex:"Sebahagian pemanah meninggalkan bukit sebelum diizinkan. Surah Ali 'Imran ayat 152 menyentuh peristiwa ini."}
+ ],
+ [
+  {text:"Mengapa parit hanya digali di bahagian utara Madinah?",opts:["Bahagian lain dilindungi batu lava, kebun tamar dan rumah","Tentera Islam kehabisan masa","Musuh hanya tahu jalan utara","Tanah di bahagian lain terlalu lembut"],a:0,ex:"Bahagian lain Madinah sudah terlindung secara semula jadi oleh harrah (batu lava), kebun tamar yang rapat dan binaan rumah."},
+  {text:"Siapakah yang memecahbelahkan pakatan Ahzab dengan helah?",opts:["Nu'aim bin Mas'ud","Salman al-Farisi","Hudhaifah bin al-Yaman","Abu Sufyan"],a:0,ex:"Nu'aim bin Mas'ud, yang baru memeluk Islam secara rahsia."},
+  {text:"Kabilah Yahudi manakah yang mungkir perjanjian semasa Perang Khandaq?",opts:["Bani Quraizah","Bani Qainuqa'","Bani Nadhir","Bani Sa'idah"],a:0,ex:"Bani Quraizah. Bani Qainuqa' dan Bani Nadhir sudah diusir lebih awal, manakala Bani Sa'idah ialah kabilah Ansar."},
+  {text:"Siapakah yang diutus ke khemah Ahzab pada malam yang sangat sejuk untuk mendapatkan berita?",opts:["Hudhaifah bin al-Yaman","Nu'aim bin Mas'ud","Salman al-Farisi","Ali bin Abi Talib"],a:0,ex:"Hudhaifah bin al-Yaman (Sahih Muslim)."}
+ ],
+ [
+  {text:"Di arah manakah Khaibar terletak dari Madinah?",opts:["Utara","Selatan","Timur","Barat"],a:0,ex:"Di utara Madinah, di laluan ke Syam."},
+  {text:"Siapakah yang tiba dari Habsyah ketika Khaibar baru dibuka?",opts:["Ja'far bin Abi Talib","Uthman bin Affan","Abu Hurairah","Salman al-Farisi"],a:0,ex:"Ja'far bin Abi Talib bersama Muslimin yang berhijrah ke Habsyah (Sahih al-Bukhari)."},
+  {text:"Apakah perjanjian dengan penduduk Khaibar selepas ia dibuka?",opts:["Terus mengusahakan kebun dan memberi separuh hasil","Keluar serta-merta tanpa membawa apa-apa","Membayar emas sahaja setiap tahun","Menyertai tentera Islam"],a:0,ex:"Mereka terus mengusahakan kebun dengan memberi separuh hasilnya (Sahih al-Bukhari)."},
+  {text:"Khaibar dibuka pada tahun berapa Hijrah?",opts:["7H","2H","5H","9H"],a:0,ex:"Muharram 7H, selepas Perjanjian Hudaibiyah (6H)."}
+ ],
+ [
+  {text:"Siapakah yang memimpin kabilah Hawazin dalam Perang Hunain?",opts:["Malik bin 'Auf an-Nasri","Abu Sufyan bin Harb","Abrahah","Heraklius"],a:0,ex:"Malik bin 'Auf an-Nasri, yang kemudian memeluk Islam."},
+  {text:"Siapakah bapa saudara baginda yang menyeru para sahabat supaya berkumpul semula di Hunain?",opts:["Al-Abbas","Hamzah","Abu Talib","Abu Lahab"],a:0,ex:"Al-Abbas bin Abdul Muttalib, yang terkenal dengan suara lantang (Sahih Muslim)."},
+  {text:"Ayat al-Quran manakah yang menyebut peristiwa Hunain?",opts:["At-Taubah: 25-26","Al-Anfal: 9","Al-Ahzab: 9","Al-Fath: 1"],a:0,ex:"Surah at-Taubah ayat 25 hingga 26."},
+  {text:"Di manakah harta rampasan Hunain dibahagikan?",opts:["Ji'ranah","Badar","Tabuk","Quba"],a:0,ex:"Di Ji'ranah, selepas kepungan Taif."}
+ ],
+ [
+  {text:"Mengapa tentera ke Tabuk digelar Jaisy al-'Usrah?",opts:["Musim panas, jarak jauh dan bekalan sukar","Tenteranya sangat kecil","Tiada pemimpin","Tentera Islam kalah"],a:0,ex:"Kerana kesukaran musim panas, jarak yang jauh dan bekalan yang terhad (at-Taubah: 117)."},
+  {text:"Berapakah anggaran tentera Islam ke Tabuk?",opts:["±30,000","±10,000","±3,000","±1,400"],a:0,ex:"Sekitar 30,000, tentera terbesar zaman baginda."},
+  {text:"Siapakah tiga sahabat yang tertinggal tanpa uzur dari Tabuk dan taubat mereka diterima?",opts:["Ka'b bin Malik, Hilal bin Umayyah, Murarah bin ar-Rabi'","Abu Bakar, Umar, Uthman","Salman, Bilal, Suhaib","Ali, Zubair, Talhah"],a:0,ex:"Ka'b bin Malik, Hilal bin Umayyah dan Murarah bin ar-Rabi' (Sahih al-Bukhari; at-Taubah: 118)."},
+  {text:"Semasa ke Tabuk, tentera melalui al-Hijr. Kaum manakah yang pernah tinggal di situ?",opts:["Thamud","'Ad","Kaum Lut","Kaum Nuh"],a:0,ex:"Kaum Thamud, kaum Nabi Salih (Sahih al-Bukhari)."}
+ ]
+];
+
+const SC2=[
+ {f:"14 orang Muslim syahid di Badar: 6 dari Muhajirin dan 8 dari Ansar.",src:"Ar-Rahiq al-Makhtum."},
+ {f:"Di Badar, dua pemuda Ansar bertanya kepada Abdul Rahman bin 'Auf yang mana satu Abu Jahal, lalu mereka berdua menyerangnya.",src:"Sahih al-Bukhari, Kitab al-Maghazi."},
+ {f:"Baginda bersabda tentang Jabal Uhud: \"Ini bukit yang mencintai kita dan kita mencintainya.\"",src:"Sahih al-Bukhari dan Sahih Muslim."},
+ {f:"Sebahagian syuhada Uhud dikebumikan dua orang dalam satu kubur, dan yang lebih banyak hafalan al-Qurannya didahulukan.",src:"Sahih al-Bukhari (hadis Jabir bin Abdullah)."},
+ {f:"Semasa menggali parit, setiap 10 orang sahabat diberi tugas menggali sepanjang 40 hasta.",src:"Ar-Rahiq al-Makhtum."},
+ {f:"Sambil menggali parit, para sahabat bersyair: \"Kamilah yang telah berbai'ah kepada Muhammad, untuk berjihad selama kami hidup.\"",src:"Sahih al-Bukhari."},
+ {f:"Selepas Khaibar dibuka, Aisyah berkata: \"Sekarang kita boleh kenyang dengan kurma.\"",src:"Sahih al-Bukhari, Kitab al-Maghazi."},
+ {f:"Pada hari Khaibar, Ali sakit mata. Baginda meludah ke matanya dan mendoakannya, lalu dia sembuh seolah-olah tidak pernah sakit.",src:"Sahih al-Bukhari dan Sahih Muslim."},
+ {f:"Durayd bin as-Simmah, seorang tua Hawazin yang berpengalaman dalam peperangan, tidak bersetuju Malik bin 'Auf membawa keluarga dan ternakan ke medan.",src:"Sirah Ibn Hisham; Ar-Rahiq al-Makhtum."},
+ {f:"Selepas rombongan Hawazin datang memeluk Islam, tawanan mereka dipulangkan.",src:"Sahih al-Bukhari, Kitab al-Maghazi."},
+ {f:"Baginda bersabda: sesiapa yang melengkapkan Jaisy al-'Usrah, baginya syurga. Lalu Uthman bin Affan melengkapkannya.",src:"Sahih al-Bukhari, Kitab Fadha'il as-Sahabah."},
+ {f:"Ali bin Abi Talib ditinggalkan di Madinah semasa Tabuk. Baginda bersabda: \"Tidakkah engkau redha kedudukanmu di sisiku seperti Harun di sisi Musa?\"",src:"Sahih al-Bukhari dan Sahih Muslim."}
+];
+
+const LEVELS=[
+ {tag:"Tahap 1 · Biasa", name:"Jejak Sirah", world:"Padang pasir Makkah hingga Madinah", medal:"Gangsa", unit:"Bab",
+  ch:CH1, xq:XQ1, sc:SC1,
+  certLine:"telah menelusuri enam bab perjalanan hidup Nabi Muhammad SAW, dari Tahun Gajah hingga 11 Hijrah."},
+ {tag:"Tahap 2 · Sederhana", name:"Medan Ghazwah", world:"Bukit-bukau sekitar Madinah dan Hijaz", medal:"Perak", unit:"Medan",
+  ch:CH2, xq:XQ2, sc:SC2,
+  certLine:"telah melawat enam medan ghazwah dan ekspedisi zaman Nabi Muhammad SAW, dari Badar hingga Tabuk."}
+];
+let LVI=0, CH=CH1, EXTRA_Q=XQ1, SCROLLS=SC1;
+function useLevel(n){ LVI=n; CH=LEVELS[n].ch; EXTRA_Q=LEVELS[n].xq; SCROLLS=LEVELS[n].sc; }
+function stTag(i){ return LEVELS[LVI].unit+" "+(i+1); }
+
+/* ---------- Bunyi (Web Audio, tiada fail luar) ---------- */
+const SND=(function(){
+  let ctx=null, master=null, windG=null, musG=null, musTimer=null, noiseBuf=null, deg=0;
+  const HIJAZ=[293.66,311.13,369.99,392,440,466.16,523.25,587.33];
+  function init(){
+    if(ctx) return true;
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return false;
+    try{ctx=new AC();}catch(e){return false;}
+    master=ctx.createGain(); master.gain.value=0.9; master.connect(ctx.destination);
+    const len=ctx.sampleRate*2, buf=ctx.createBuffer(1,len,ctx.sampleRate), d=buf.getChannelData(0); let last=0;
+    for(let i=0;i<len;i++){const w=Math.random()*2-1; last=(last+0.02*w)/1.02; d[i]=last*3.5;}
+    const src=ctx.createBufferSource(); src.buffer=buf; src.loop=true;
+    const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=500; bp.Q.value=0.6;
+    const lfo=ctx.createOscillator(); lfo.frequency.value=0.08; const lg=ctx.createGain(); lg.gain.value=250; lfo.connect(lg); lg.connect(bp.frequency);
+    windG=ctx.createGain(); windG.gain.value=0; src.connect(bp); bp.connect(windG); windG.connect(master); src.start(); lfo.start();
+    noiseBuf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.1),ctx.sampleRate); const nd=noiseBuf.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+    musG=ctx.createGain(); musG.gain.value=0; musG.connect(master);
+    const dr=ctx.createOscillator(), dg=ctx.createGain(); dr.type="sine"; dr.frequency.value=146.83; dg.gain.value=0.06; dr.connect(dg); dg.connect(musG); dr.start();
+    return true;
+  }
+  function pluck(f,when){
+    const t=ctx.currentTime+(when||0), o=ctx.createOscillator(), g=ctx.createGain(), lp=ctx.createBiquadFilter();
+    o.type="triangle"; o.frequency.value=f; lp.type="lowpass"; lp.frequency.value=1800;
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.16,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);
+    o.connect(lp); lp.connect(g); g.connect(musG); o.start(t); o.stop(t+1);
+  }
+  function startMusic(){
+    musTimer=setInterval(()=>{ if(!ctx||ctx.state!=="running") return; if(Math.random()<0.28) return;
+      deg=Math.max(0,Math.min(HIJAZ.length-1,deg+[-2,-1,-1,1,1,2][Math.floor(Math.random()*6)]));
+      pluck(HIJAZ[deg]); if(Math.random()<0.2) pluck(HIJAZ[Math.max(0,deg-2)],0.2); },430);
+  }
+  function apply(){
+    if(!ctx) return; const t=ctx.currentTime;
+    windG.gain.setTargetAtTime(S.snd?0.05:0,t,0.4); musG.gain.setTargetAtTime(S.mus?0.55:0,t,0.4);
+    if(S.mus&&!musTimer) startMusic(); if(!S.mus&&musTimer){clearInterval(musTimer);musTimer=null;}
+  }
+  function resume(){ if(!init()) return; if(ctx.state==="suspended") ctx.resume(); apply(); }
+  function tone(f,dur,type,vol,when){
+    if(!ctx||!S.snd) return; const t=ctx.currentTime+(when||0), o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type||"sine"; o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.2,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+0.05);
+  }
+  return {
+    resume, apply,
+    ok(){tone(659.25,0.18,"sine",0.2);tone(987.77,0.32,"sine",0.18,0.12);},
+    bad(){tone(165,0.22,"square",0.05);tone(123,0.3,"square",0.05,0.1);},
+    win(){[523.25,659.25,783.99,1046.5].forEach((f,k)=>tone(f,0.35,"triangle",0.16,k*0.11));},
+    pick(){[783.99,987.77,1174.66].forEach((f,k)=>tone(f,0.25,"sine",0.14,k*0.08));},
+    step(){ if(!ctx||!S.snd) return; const t=ctx.currentTime, src=ctx.createBufferSource(), lp=ctx.createBiquadFilter(), g=ctx.createGain();
+      src.buffer=noiseBuf; lp.type="lowpass"; lp.frequency.value=520; g.gain.setValueAtTime(0.09,t); g.gain.exponentialRampToValueAtTime(0.0001,t+0.08);
+      src.connect(lp); lp.connect(g); g.connect(master); src.start(t); src.stop(t+0.1); }
+  };
+})();
+document.addEventListener("pointerdown",()=>SND.resume(),{passive:true});
+document.addEventListener("keydown",()=>SND.resume());
+function soundToggles(){
+  return '<div class="toggles"><button class="chip" id="tsnd" aria-pressed="'+!!S.snd+'">Bunyi: '+(S.snd?"On":"Off")+'</button>'+
+    '<button class="chip" id="tmus" aria-pressed="'+!!S.mus+'">Muzik latar: '+(S.mus?"On":"Off")+'</button></div>';
+}
+function wireSoundToggles(){
+  const a=document.getElementById("tsnd"), b=document.getElementById("tmus");
+  const upd=()=>{ if(a){a.textContent="Bunyi: "+(S.snd?"On":"Off");a.setAttribute("aria-pressed",!!S.snd);} if(b){b.textContent="Muzik latar: "+(S.mus?"On":"Off");b.setAttribute("aria-pressed",!!S.mus);} };
+  if(a) a.onclick=()=>{S.snd=!S.snd;save();SND.resume();upd();};
+  if(b) b.onclick=()=>{S.mus=!S.mus;save();SND.resume();upd();};
+}
+
+/* ---------- Leaderboard (db dikongsi) ---------- */
+const LB={db:null,user:null,uid:null,tried:false,p:null};
+function lbInit(){
+  if(LB.p) return LB.p;
+  LB.p=(async()=>{
+    const API="/api/scores";
+    const call=async(body)=>{ const r=await fetch(API,body?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{cache:"no-store"});
+      if(!r.ok) throw new Error("api "+r.status); return r.json(); };
+    const rid=()=>{ try{ return crypto.randomUUID(); }catch(e){ return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==="x"?r:(r&3|8)).toString(16);}); } };
+    let me=null; try{ me=JSON.parse(localStorage.getItem("jejak-sirah-player")||"null"); }catch(e){}
+    if(!me||!me.id||!me.secret){ me={id:rid(),secret:rid()+rid()}; try{ localStorage.setItem("jejak-sirah-player",JSON.stringify(me)); }catch(e){} }
+    LB.uid=me.id;
+    const pulls=new Set(), refresh=()=>pulls.forEach(f=>f());
+    LB.db={
+      doc:()=>({
+        set:d=>call({action:"submit",id:me.id,secret:me.secret,name:d.name,score:d.score,stars:d.stars,gems:d.gems,scrolls:d.scrolls,done:d.done}).then(refresh),
+        delete:()=>call({action:"delete",id:me.id,secret:me.secret}).then(refresh)
+      }),
+      collection:()=>({orderBy:()=>({limit:()=>({onSnapshot:(cb,err)=>{
+        let live=true;
+        const pull=async()=>{ try{ const list=await call(null); if(!live) return;
+            cb({empty:!list.length,docs:list.map(v=>({id:v.id,data:()=>v}))}); }catch(e){ if(live&&err) err(e); } };
+        pull(); pulls.add(pull); const t=setInterval(pull,20000);
+        return ()=>{ live=false; pulls.delete(pull); clearInterval(t); };
+      }})})})
+    };
+    return LB;
+  })();
+  return LB.p;
+}
+function lbData(){return {name:String(S.name||"Pengembara").slice(0,18),score:score(),stars:allStars(),gems:allGems(),scrolls:allScrolls(),done:lvSum(p=>p.done),updatedAt:Date.now()};}
+let lbTimer=null;
+function lbPush(){ if(!S.lb) return; clearTimeout(lbTimer); lbTimer=setTimeout(async()=>{ const L=await lbInit(); if(!L.db||!L.uid) return; try{ await L.db.doc("scores/"+L.uid).set(lbData()); }catch(e){} },700); }
+let lbUnsub=null;
+function lbLeave(){ if(lbUnsub){ try{lbUnsub();}catch(e){} lbUnsub=null; } }
+function board(back){
+  app.innerHTML='<section class="screen">'+
+   '<div><p class="eyebrow">Leaderboard</p><h2>Papan markah pengembara</h2></div>'+
+   '<p class="muted small">Markah = bintang × 10 + permata ilmu × 5 + gulungan ilmu × 3, dikira untuk semua tahap. Hanya nama pengembara dan markah dipaparkan.</p>'+
+   '<div class="panel stack" id="lbme"><p><b>Markah kamu: '+score()+'</b> <span class="muted small">(★ '+allStars()+' · ◆ '+allGems()+' · ✧ '+allScrolls()+')</span></p><p class="muted small" id="lbst">Menyemak sambungan...</p><div id="lbact"></div></div>'+
+   '<ol class="lblist" id="lbl"><li class="muted small">Memuatkan senarai...</li></ol>'+
+   '<button class="btn ghost wide" id="lbback">Kembali</button></section>';
+  document.getElementById("lbback").onclick=()=>{lbLeave(); back();};
+  top();
+  lbInit().then(L=>{
+    const st=document.getElementById("lbst"), act=document.getElementById("lbact"), list=document.getElementById("lbl");
+    if(!st) return;
+    if(!L.db){ st.textContent="Leaderboard belum dapat disambungkan."; list.innerHTML=""; return; }
+    const renderAct=()=>{
+      if(!L.uid){ st.textContent="Log masuk untuk menghantar markah. Kamu masih boleh lihat senarai."; act.innerHTML=""; return; }
+      if(S.lb){ st.textContent="Markah kamu dihantar secara automatik setiap kali bertambah."; act.innerHTML='<button class="btn ghost" id="lboff">Tarik balik markah saya</button>';
+        document.getElementById("lboff").onclick=async()=>{ try{ await L.db.doc("scores/"+L.uid).delete(); }catch(e){} S.lb=false; save(); renderAct(); }; }
+      else { st.textContent="Markah kamu belum dihantar."; act.innerHTML='<button class="btn" id="lbon">Hantar markah saya sebagai "'+esc(S.name||"Pengembara")+'"</button>';
+        document.getElementById("lbon").onclick=async()=>{ const b=document.getElementById("lbon"); b.disabled=true;
+          try{ await L.db.doc("scores/"+L.uid).set(lbData()); S.lb=true; save(); renderAct(); }
+          catch(e){ b.disabled=false; st.textContent="Markah tidak dapat dihantar sekarang. Cuba lagi sebentar."; } }; }
+    };
+    renderAct();
+    let got=false; const tm=setTimeout(()=>{ if(!got&&list) list.innerHTML='<li class="muted small">Belum ada markah, atau sambungan lambat.</li>'; },10000);
+    lbLeave();
+    lbUnsub=L.db.collection("scores").orderBy("score","desc").limit(30).onSnapshot(snap=>{
+      got=true; clearTimeout(tm); const el=document.getElementById("lbl"); if(!el) return;
+      if(snap.empty){ el.innerHTML='<li class="muted small">Belum ada markah. Jadilah yang pertama.</li>'; return; }
+      el.innerHTML=snap.docs.map((d,k)=>{ const v=d.data()||{}; const me=d.id===L.uid;
+        return '<li class="lbrow'+(me?' me':'')+'"><span class="rk">'+(k+1)+'</span><span class="nm2">'+esc(String(v.name||"Pengembara").slice(0,18))+(me?' (kamu)':'')+'</span><span class="sc">'+(Number(v.score)||0)+'</span>'+
+          '<span class="det">★ '+(Number(v.stars)||0)+' · ◆ '+(Number(v.gems)||0)+' · ✧ '+(Number(v.scrolls)||0)+' · '+(Number(v.done)||0)+' bab/medan</span></li>'; }).join("");
+    },err=>{ got=true; clearTimeout(tm); const el=document.getElementById("lbl"); if(el) el.innerHTML='<li class="muted small">Senarai tidak dapat dimuatkan sekarang.</li>'; });
+  });
+}
+
+/* ---------- Avatar ---------- */
+const SKINS=["#F6D7B8","#E8B98E","#C98E62","#9C6644","#6E4530"];
+const OUTFITS=[["Putih","#F2EEE3"],["Biru","#3F5A8A"],["Hijau","#2F7D62"],["Merah bata","#8A3B3B"],["Kunyit","#C9781C"],["Kelabu","#5A546A"]];
+const HEADS=[["tiada","Tiada"],["kopiah","Kopiah"],["songkok","Songkok"],["serban","Serban"],["tudung","Tudung"]];
+const HEADC=["#FFFFFF","#1F1F26","#2F7D62","#7A5BA8","#C9781C","#D98AA0"];
+const ITEMS=[["tiada","Tiada"],["beg","Beg galas"],["tongkat","Tongkat"],["kitab","Kitab"]];
+const PRESETS=[
+  {skin:1,outfit:0,head:1,headColor:0,item:3},
+  {skin:2,outfit:2,head:4,headColor:3,item:1},
+  {skin:3,outfit:1,head:3,headColor:0,item:2},
+  {skin:0,outfit:4,head:4,headColor:5,item:3}
+];
+
+function avatarSVG(a,cls){
+  const sk=SKINS[a.skin], oc=OUTFITS[a.outfit][1], hc=HEADC[a.headColor], h=HEADS[a.head][0], it=ITEMS[a.item][0];
+  let s='<svg class="'+(cls||"")+'" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">';
+  s+='<ellipse cx="50" cy="115" rx="27" ry="4.5" fill="var(--shadow)"/>';
+  if(it==="beg") s+='<rect x="64" y="74" width="16" height="24" rx="4" fill="#7A5230"/>';
+  if(it==="tongkat") s+='<line x1="78" y1="58" x2="80" y2="116" stroke="#8B5E34" stroke-width="4" stroke-linecap="round"/>';
+  s+='<path d="M24 116 C24 88 34 70 50 70 C66 70 76 88 76 116 Z" fill="'+oc+'" stroke="rgba(0,0,0,.14)" stroke-width="1.5"/>';
+  s+='<path d="M44 71 L50 84 L56 71" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="2"/>';
+  if(it==="beg") s+='<path d="M41 72 L38 104 M59 72 L62 104" stroke="#6B4423" stroke-width="3" stroke-linecap="round"/>';
+  if(it==="kitab"){
+    s+='<rect x="39" y="86" width="22" height="15" rx="2" fill="#3E6B5A"/><line x1="50" y1="86" x2="50" y2="101" stroke="#E9D5A8" stroke-width="1.5"/>';
+    s+='<circle cx="39" cy="94" r="4.5" fill="'+sk+'"/><circle cx="61" cy="94" r="4.5" fill="'+sk+'"/>';
+  } else {
+    s+='<circle cx="31" cy="97" r="4.5" fill="'+sk+'"/>';
+    s+='<circle cx="'+(it==="tongkat"?78:69)+'" cy="'+(it==="tongkat"?90:97)+'" r="4.5" fill="'+sk+'"/>';
+  }
+  if(h==="tudung"){
+    s+='<path d="M50 20 C31 20 25 36 26 52 C27 72 38 82 50 84 C62 82 73 72 74 52 C75 36 69 20 50 20 Z" fill="'+hc+'" stroke="rgba(0,0,0,.14)" stroke-width="1.5"/>';
+    s+='<ellipse cx="50" cy="49" rx="14" ry="16" fill="'+sk+'"/>';
+  } else {
+    s+='<rect x="45" y="60" width="10" height="11" fill="'+sk+'"/>';
+    s+='<circle cx="50" cy="46" r="18" fill="'+sk+'"/>';
+    if(h==="tiada") s+='<path d="M32 44 C31 28 41 25 50 25 C60 25 69 29 68 44 C64 35 57 33 50 33 C43 33 36 35 32 44 Z" fill="#2B1D14"/>';
+    if(h==="kopiah") s+='<path d="M32 38 C33 25 41 22 50 22 C59 22 67 25 68 38 Z" fill="'+hc+'" stroke="rgba(0,0,0,.18)" stroke-width="1.5"/><path d="M33 34 H67" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/>';
+    if(h==="songkok") s+='<path d="M32 38 L34 21 L66 21 L68 38 Z" fill="'+hc+'" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>';
+    if(h==="serban") s+='<ellipse cx="50" cy="31" rx="22" ry="12" fill="'+hc+'" stroke="rgba(0,0,0,.16)" stroke-width="1.5"/><path d="M30 33 C40 26 60 40 70 30 M31 28 C42 22 58 34 69 25" fill="none" stroke="rgba(0,0,0,.14)" stroke-width="1.5"/>';
+  }
+  const ey=h==="tudung"?48:47;
+  s+='<circle cx="44" cy="'+ey+'" r="2.2" fill="#2B1D14"/><circle cx="56" cy="'+ey+'" r="2.2" fill="#2B1D14"/>';
+  s+='<circle cx="40" cy="'+(ey+6)+'" r="3" fill="rgba(220,100,90,.25)"/><circle cx="60" cy="'+(ey+6)+'" r="3" fill="rgba(220,100,90,.25)"/>';
+  s+='<path d="M45 '+(ey+8)+' Q50 '+(ey+12)+' 55 '+(ey+8)+'" fill="none" stroke="#7A3B2B" stroke-width="2" stroke-linecap="round"/>';
+  return s+'</svg>';
+}
+
+/* ---------- State ---------- */
+const KEY="jejak-sirah-v1";
+function lvBlank(){return {done:0,stars:[0,0,0,0,0,0],gems:[0,0,0,0,0,0],scrolls:[0,0,0,0,0,0,0,0,0,0,0,0],finished:""};}
+function fresh(){return Object.assign({name:"",av:Object.assign({},PRESETS[0]),snd:true,mus:false,lb:false,lv:0,lvl:[],seen2:false},lvBlank());}
+let S=fresh();
+try{const raw=localStorage.getItem(KEY); if(raw){const o=JSON.parse(raw); if(o&&o.av) S=Object.assign(fresh(),o);}}catch(e){}
+function stash(){ if(!Array.isArray(S.lvl)) S.lvl=[]; S.lvl[S.lv||0]={done:S.done,stars:S.stars.slice(),gems:S.gems.slice(),scrolls:(S.scrolls||lvBlank().scrolls).slice(),finished:S.finished||""}; }
+function save(){stash();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+if(!Array.isArray(S.lvl)) S.lvl=[]; S.lv=(S.lv===1)?1:0; useLevel(S.lv); stash();
+function setLevel(n){ stash(); S.lv=n; const p=S.lvl[n]||lvBlank(); S.done=p.done; S.stars=p.stars.slice(); S.gems=p.gems.slice(); S.scrolls=p.scrolls.slice(); S.finished=p.finished||""; useLevel(n); save(); }
+function unlocked(n){ stash(); return n===0||!!(S.lvl[n-1]&&S.lvl[n-1].done>=6); }
+function lvSum(f){ stash(); return S.lvl.reduce((a,p)=>a+(p?f(p):0),0); }
+const sumA=a=>(a||[]).reduce((x,y)=>x+y,0);
+function allStars(){return lvSum(p=>sumA(p.stars));} function allGems(){return lvSum(p=>sumA(p.gems));} function allScrolls(){return lvSum(p=>sumA(p.scrolls));}
+
+const app=document.getElementById("app");
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function totalStars(){return S.stars.reduce((x,y)=>x+y,0);}
+function totalGems(){return S.gems.reduce((x,y)=>x+y,0);}
+function totalScrolls(){return (S.scrolls||[]).reduce((x,y)=>x+y,0);}
+function score(){return allStars()*10+allGems()*5+allScrolls()*3;}
+function starStr(n){let s="";for(let i=0;i<3;i++)s+=i<n?"★":'<span class="off">★</span>';return s;}
+function top(){window.scrollTo(0,0);}
+function today(){const d=new Date();return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear();}
+
+/* ---------- Screens ---------- */
+function title(confirming){
+  const has=S.name&&(lvSum(p=>p.done)>0||S.lv>0);
+  app.innerHTML='<section class="screen hero">'+
+   '<svg viewBox="0 0 360 170" aria-hidden="true">'+
+   '<rect width="360" height="170" rx="20" class="m-sky"/>'+
+   starsDecor(360,90,14)+
+   '<circle cx="292" cy="40" r="16" fill="var(--saffron)"/><circle cx="299" cy="35" r="14" class="m-sky"/>'+
+   '<path d="M0 120 C70 90 130 100 200 118 C260 132 310 110 360 100 V170 H0 Z" class="m-d2"/>'+
+   '<rect x="160" y="78" width="40" height="40" fill="var(--ink)"/><rect x="160" y="88" width="40" height="5" fill="var(--saffron)"/>'+
+   '<path d="M0 140 C80 120 160 128 230 144 C290 156 330 140 360 132 V170 H0 Z" class="m-d1"/>'+
+   '</svg>'+
+   '<p class="eyebrow">Pengembaraan garis masa</p>'+
+   '<h1>Jejak Sirah</h1>'+
+   '<p>Menelusuri perjalanan hidup Nabi Muhammad SAW dari Tahun Gajah hingga 11 Hijrah. Enam bab, enam stesen dalam dunia 3D. Di setiap stesen, Tok Rahim menanti dengan cabaran dan soalan. Tamatkan Tahap 1 untuk membuka Tahap 2: Medan Ghazwah.</p>'+
+   '<p class="note">Game ini tidak memaparkan gambaran Nabi Muhammad SAW, keluarga baginda atau para sahabat. Kamu bermain sebagai seorang pengembara.</p>'+
+   (confirming?
+     '<div class="panel confirm"><b>Padam semua kemajuan dan mula dari awal?</b><div class="row"><button class="btn" id="yes">Ya, mula semula</button><button class="btn ghost" id="no">Batal</button></div></div>'
+   : (has?'<button class="btn wide" id="cont">Sambung perjalanan ('+esc(LEVELS[LVI].tag)+', '+S.done+'/6)</button><button class="btn ghost wide" id="reset">Mula semula</button>'
+          :'<button class="btn wide" id="start">Cipta watak & mula</button>'))+
+   '<button class="btn ghost wide" id="lb">Leaderboard</button>'+
+   '<button class="btn ghost wide" id="refs">Rujukan</button>'+
+   soundToggles()+
+   '</section>';
+  const on=(id,f)=>{const el=document.getElementById(id); if(el) el.onclick=f;};
+  on("start",()=>avatar());
+  on("lb",()=>board(()=>title(false)));
+  wireSoundToggles();
+  on("cont",()=>{ if(unlocked(1)) levels(); else map(); });
+  on("reset",()=>title(true));
+  on("yes",()=>{S=fresh();save();avatar();});
+  on("no",()=>title(false));
+  on("refs",()=>refs());
+  top();
+}
+
+function starsDecor(w,h,n){
+  let s="", seed=7;
+  const r=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+  for(let i=0;i<n;i++) s+='<circle class="m-star" cx="'+(r()*w).toFixed(1)+'" cy="'+(8+r()*h).toFixed(1)+'" r="'+(0.8+r()*1.4).toFixed(1)+'"/>';
+  return s;
+}
+
+function refs(){
+  app.innerHTML='<section class="screen">'+
+   '<p class="eyebrow">Rujukan</p><h2>Sumber fakta dalam game ini</h2>'+
+   '<ol class="refs">'+
+   '<li>Safiyurrahman al-Mubarakfuri, <i>Ar-Rahiq al-Makhtum</i> (rujukan utama untuk urutan dan tarikh).</li>'+
+   '<li>Ibn Hisham, <i>As-Sirah an-Nabawiyyah</i>.</li>'+
+   '<li><i>Sahih al-Bukhari</i> dan <i>Sahih Muslim</i>, untuk peristiwa yang disebut dalam hadis.</li>'+
+   '<li>Al-Quran: al-\'Alaq 1-5, asy-Syu\'ara\' 214, al-Isra\' 1 & 81, at-Taubah 40, al-Baqarah 144, al-Fath 1, al-Ma\'idah 3.</li>'+
+   '<li>Tahap 2 (Medan Ghazwah): al-Anfal 9 & 11, Ali \'Imran 152, al-Ahzab 9, at-Taubah 25-26 & 117-119; Sahih al-Bukhari Kitab al-Maghazi; Sahih Muslim.</li>'+
+   '</ol>'+
+   '<p class="muted small">Tarikh dalam tahun Masihi ialah anggaran. Peristiwa yang tarikhnya ada khilaf besar dalam kalangan ulama (contohnya Isra\' Mi\'raj) tidak dimasukkan dalam cabaran susun, supaya jawapan "betul" tidak mengelirukan. Ketepatan kandungan elok disemak oleh ustaz atau guru sirah sebelum digunakan dalam kelas.</p>'+
+   '<button class="btn ghost wide" id="back">Kembali</button></section>';
+  document.getElementById("back").onclick=()=>title(false);
+  top();
+}
+
+function avatar(){
+  const draft={name:S.name, av:Object.assign({},S.av)};
+  function render(){
+    const a=draft.av;
+    const sw=(arr,key,isPair)=>arr.map((c,i)=>'<button class="chip sw" aria-label="'+(isPair?c[0]:"Warna "+(i+1))+'" aria-pressed="'+(a[key]===i)+'" data-k="'+key+'" data-i="'+i+'" style="background:'+(isPair?c[1]:c)+'"></button>').join("");
+    const tx=(arr,key)=>arr.map((c,i)=>'<button class="chip" aria-pressed="'+(a[key]===i)+'" data-k="'+key+'" data-i="'+i+'">'+c[1]+'</button>').join("");
+    const headColorOn=HEADS[a.head][0]!=="tiada";
+    app.innerHTML='<section class="screen">'+
+     '<div><p class="eyebrow">Langkah 1</p><h2>Cipta watak pengembara</h2></div>'+
+     (HAS3D?'<div class="stage3d" id="stage" aria-label="Pratonton watak 3D"></div>':'<div class="av-stage" id="stage">'+avatarSVG(a)+'</div>')+
+     '<div><label class="lbl" for="nm">Nama pengembara</label><input type="text" id="nm" maxlength="18" placeholder="Contoh: Aisyah, Hakim" value="'+esc(draft.name)+'"></div>'+
+     '<div><span class="lbl">Pilih watak siap</span><div class="presets">'+PRESETS.map((p,i)=>'<button class="preset" data-p="'+i+'" aria-label="Watak siap '+(i+1)+'">'+avatarSVG(p)+'</button>').join("")+'</div></div>'+
+     '<div class="panel stack">'+
+       '<div><span class="lbl">Warna kulit</span><div class="chips">'+sw(SKINS,"skin")+'</div></div>'+
+       '<div><span class="lbl">Pakaian</span><div class="chips">'+sw(OUTFITS,"outfit",true)+'</div></div>'+
+       '<div><span class="lbl">Penutup kepala</span><div class="chips">'+tx(HEADS,"head")+'</div></div>'+
+       (headColorOn?'<div><span class="lbl">Warna penutup kepala</span><div class="chips">'+sw(HEADC,"headColor")+'</div></div>':'')+
+       '<div><span class="lbl">Barang bawaan</span><div class="chips">'+tx(ITEMS,"item")+'</div></div>'+
+     '</div>'+
+     '<p class="feedback bad" id="err"></p>'+
+     '<button class="btn wide" id="go">Mula pengembaraan</button>'+
+     '</section>';
+    if(HAS3D) mountPreview(document.getElementById("stage"),a);
+    const nm=document.getElementById("nm");
+    nm.oninput=()=>{draft.name=nm.value;};
+    app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{a[b.dataset.k]=+b.dataset.i;const y=window.scrollY;render();window.scrollTo(0,y);});
+    app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{draft.av=Object.assign({},PRESETS[+b.dataset.p]);const y=window.scrollY;render();window.scrollTo(0,y);});
+    document.getElementById("go").onclick=()=>{
+      const n=draft.name.trim();
+      if(!n){document.getElementById("err").textContent="Tulis nama pengembara dulu.";nm.focus();return;}
+      S.name=n; S.av=draft.av; save(); map();
+    };
+  }
+  render(); top();
+}
+
+/* Map geometry */
+const P=[[180,955],[92,820],[268,685],[92,550],[268,415],[92,280],[180,140]];
+function seg(i){const [x1,y1]=P[i],[x2,y2]=P[i+1],m=(y1+y2)/2;return "M"+x1+" "+y1+" C"+x1+" "+m+" "+x2+" "+m+" "+x2+" "+y2;}
+function palm(x,y,s){return '<g transform="translate('+x+' '+y+') scale('+s+')"><path d="M-2 0 C-1 -14 1 -22 3 -30 L6 -30 C4 -22 3 -12 3 0 Z" class="m-palm-t"/><path d="M4 -30 C-6 -36 -14 -32 -18 -26 C-10 -30 -2 -30 4 -30 Z M4 -30 C14 -36 22 -32 26 -26 C18 -30 10 -30 4 -30 Z M4 -30 C0 -40 -8 -42 -12 -40 C-4 -38 1 -34 4 -30 Z M4 -30 C8 -40 16 -42 20 -40 C12 -38 7 -34 4 -30 Z" class="m-palm-l"/></g>';}
+
+function map(){ if(HAS3D&&!S.view2d) map3D(); else map2D(); }
+function map2D(){
+  const nodes=CH.map((c,i)=>{
+    const k=i+1,[x,y]=P[k],state=i<S.done?"done":(i===S.done?"open":"locked");
+    let lx,anchor;
+    if(k===6){lx=x;anchor="middle";} else if(x<180){lx=x+40;anchor="start";} else {lx=x-40;anchor="end";}
+    const ly=k===6?y-62:y-6;
+    return '<g class="node '+state+'" data-c="'+i+'" role="button" tabindex="'+(state==="locked"?-1:0)+'" aria-label="Bab '+k+': '+esc(c.name)+(state==="locked"?" (berkunci)":"")+'">'+
+      (state==="open"?'<circle class="pulse" cx="'+x+'" cy="'+y+'" r="26"/>':'')+
+      '<circle class="base" cx="'+x+'" cy="'+y+'" r="26"/>'+
+      '<text class="num" x="'+x+'" y="'+y+'">'+(state==="done"?"✓":k)+'</text>'+
+      '<text class="t" x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'">'+esc(c.short)+'</text>'+
+      '<text class="s" x="'+lx+'" y="'+(ly+17)+'" text-anchor="'+anchor+'">'+esc(c.place)+'</text>'+
+      (state==="done"?'<text class="st" x="'+lx+'" y="'+(ly+34)+'" text-anchor="'+anchor+'">'+"★".repeat(S.stars[i])+(S.gems[i]?"  ◆":"")+'</text>':'')+
+      '</g>';
+  }).join("");
+  const segs=CH.map((_,i)=>'<path id="seg'+i+'" class="m-trail" d="'+seg(i)+'"/>').join("");
+  const [ax,ay]=P[Math.min(S.done,6)];
+  app.innerHTML='<section class="screen">'+
+   '<div class="hud">'+avatarSVG(S.av)+'<div class="who"><span class="muted small">Pengembara</span><b>'+esc(S.name)+'</b></div>'+
+   '<div class="tally"><span title="Bintang">★ '+totalStars()+'/18</span><span title="Permata ilmu">◆ '+totalGems()+'/6</span></div></div>'+
+   '<p class="muted small" style="text-align:center">'+(S.done<6?'Ketik stesen yang bercahaya untuk teruskan perjalanan.':'Semua bab selesai. Ketik mana-mana stesen untuk main semula.')+'</p>'+
+   '<svg class="map" id="map" viewBox="0 0 360 1010" aria-label="Peta perjalanan sirah">'+
+     '<rect width="360" height="1010" class="m-sky"/>'+starsDecor(360,980,40)+
+     '<path d="M0 230 C90 190 200 250 360 200 V330 C250 360 120 300 0 340 Z" class="m-d1"/>'+
+     '<path d="M0 500 C110 470 230 520 360 480 V600 C240 630 120 580 0 610 Z" class="m-d2"/>'+
+     '<path d="M0 760 C120 730 220 780 360 740 V860 C240 890 120 840 0 870 Z" class="m-d1"/>'+
+     '<path d="M0 930 C100 900 250 950 360 915 V1010 H0 Z" class="m-d2"/>'+
+     palm(34,640,1.1)+palm(326,520,.9)+palm(330,880,1)+palm(30,380,.9)+palm(320,250,1.1)+palm(40,980,.8)+
+     '<text class="m-label" x="226" y="985">Mula</text>'+
+     '<circle cx="'+P[0][0]+'" cy="'+P[0][1]+'" r="9" class="m-start"/>'+
+     segs+nodes+
+     '<g id="mapAv" transform="translate('+(ax-28)+' '+(ay-84)+')"><svg width="56" height="67" viewBox="0 0 100 120">'+avatarSVG(S.av).replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"")+'</svg></g>'+
+   '</svg>'+
+   '<div class="row">'+(S.done>=6?'<button class="btn" id="cert">Lihat sijil</button>':'')+'<button class="btn ghost" id="edit">Tukar watak</button>'+(HAS3D?'<button class="btn ghost" id="v3d">Dunia 3D</button>':'')+'<button class="btn ghost" id="home">Menu utama</button></div>'+
+   '</section>';
+  const v3=document.getElementById("v3d"); if(v3) v3.onclick=()=>{S.view2d=false;save();map();};
+  app.querySelectorAll(".node").forEach(g=>{
+    const i=+g.dataset.c;
+    const act=()=>{
+      if(i>S.done) return;
+      if(i===S.done) walk(i,()=>story(i)); else story(i);
+    };
+    g.onclick=act;
+    g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}};
+  });
+  document.getElementById("edit").onclick=()=>avatar();
+  document.getElementById("home").onclick=()=>title(false);
+  const c=document.getElementById("cert"); if(c) c.onclick=()=>cert();
+  // scroll so the avatar is in view
+  requestAnimationFrame(()=>{
+    const av=document.getElementById("mapAv"); if(!av) return;
+    const r=av.getBoundingClientRect();
+    window.scrollTo({top:Math.max(0,window.scrollY+r.top-window.innerHeight*0.55),behavior:reduce?"auto":"smooth"});
+  });
+}
+
+let walking=false;
+function walk(i,done){
+  if(walking) return;
+  const path=document.getElementById("seg"+i), av=document.getElementById("mapAv");
+  if(!path||!av||reduce){done();return;}
+  walking=true;
+  const L=path.getTotalLength(), dur=1700, t0=performance.now();
+  function step(now){
+    const t=Math.min(1,(now-t0)/dur), e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    const p=path.getPointAtLength(L*e), bob=Math.abs(Math.sin(t*Math.PI*8))*-5;
+    av.setAttribute("transform","translate("+(p.x-28)+" "+(p.y-84+bob)+")");
+    if(t<1) requestAnimationFrame(step); else {walking=false;setTimeout(done,250);}
+  }
+  requestAnimationFrame(step);
+}
+
+function story(i){
+  const c=CH[i];
+  app.innerHTML='<section class="screen story">'+
+   '<div><p class="eyebrow">'+esc(stTag(i))+' daripada 6</p><h2>'+esc(c.name)+'</h2></div>'+
+   '<div class="place"><span class="tag">'+esc(c.place)+'</span><span class="tag">'+esc(c.years)+'</span></div>'+
+   '<div class="panel stack">'+c.intro.map(p=>'<p>'+esc(p)+'</p>').join("")+'</div>'+
+   '<button class="btn wide" id="go">Mula cabaran</button>'+
+   '<button class="btn ghost wide" id="back">Kembali ke peta</button></section>';
+  document.getElementById("go").onclick=()=>sortGame(i);
+  document.getElementById("back").onclick=()=>map();
+  top();
+}
+
+function sortGame(i){ challengeInto(app,i,'<section class="screen">','</section>',st=>reveal(i,st)); top(); }
+const CTYPES={susun:"Susun ikut urutan",padan:"Padankan peristiwa & masa",dulu:"Mana berlaku dulu?",bs:"Betul atau salah",siapa:"Siapa saya?",strategi:"Peta strategi"};
+function typesFor(i){ return LVI===1?["susun","bs","siapa"].concat(CH[i]&&CH[i].map?["strategi"]:[]):["susun","padan","dulu"]; }
+function pickType(i){
+  const all=typesFor(i||0), opts=all.filter(t=>t!==S.lastType);
+  let t=opts[Math.floor(Math.random()*opts.length)];
+  if(opts.includes("strategi")&&Math.random()<0.4) t="strategi";
+  S.lastType=t; save(); return t;
+}
+function challengeInto(el,i,open,close,onSolved,type){
+  type=type||pickType(i);
+  if(type==="bs") return bsInto(el,i,open,close,onSolved);
+  if(type==="siapa") return whoInto(el,i,open,close,onSolved);
+  if(type==="strategi"&&CH[i].map) return stratInto(el,i,open,close,onSolved);
+  if(type==="padan") return matchInto(el,i,open,close,onSolved);
+  if(type==="dulu") return firstInto(el,i,open,close,onSolved);
+  return sortInto(el,i,open,close,onSolved);
+}
+function nums(w){return w.match(/\d+/g)||[];}
+function matchInto(el,i,open,close,onSolved){
+  const c=CH[i], pick=[], used=new Set();
+  // only pair labels with distinct numbers, so no label could fairly fit two events
+  for(const k of shuffle(c.ev.map((_,k)=>k))){
+    const ns=nums(c.ev[k].w); if(!ns.length||ns.some(n=>used.has(n))) continue;
+    pick.push(k); ns.forEach(n=>used.add(n)); if(pick.length===4) break;
+  }
+  if(pick.length<3) return sortInto(el,i,open,close,onSolved);
+  const left=shuffle(pick), right=shuffle(pick), done=new Set();
+  let sel=null, miss=0, busy=false;
+  function render(msg,cls,badR){
+    el.innerHTML=open+
+     '<div><p class="eyebrow">Bab '+(i+1)+' · Cabaran padan</p><h2>'+esc(c.name)+'</h2></div>'+
+     '<p class="muted small">Ketik satu peristiwa di kiri, kemudian ketik masa yang sepadan di kanan.</p>'+
+     '<div class="mgrid"><div class="mcol">'+left.map(k=>'<button class="mitem'+(done.has(k)?' ok':'')+(sel===k?' sel':'')+'" data-l="'+k+'"'+(done.has(k)?' disabled':'')+' aria-pressed="'+(sel===k)+'">'+esc(c.ev[k].t)+'</button>').join("")+'</div>'+
+     '<div class="mcol">'+right.map(k=>'<button class="mitem when'+(done.has(k)?' ok':'')+(badR===k?' bad':'')+'" data-r="'+k+'"'+(done.has(k)?' disabled':'')+'>'+esc(c.ev[k].w)+'</button>').join("")+'</div></div>'+
+     '<p class="feedback '+(cls||"")+'">'+(msg||"")+'</p>'+close;
+    el.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{if(busy)return;sel=+b.dataset.l;render();});
+    el.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{
+      if(busy) return; const k=+b.dataset.r;
+      if(sel===null){render("Pilih peristiwa di kolum kiri dulu.","bad");return;}
+      if(k===sel){
+        SND.ok();
+        done.add(k); sel=null;
+        if(done.size===pick.length){busy=true;render("Semua sudah dipadankan.","ok");setTimeout(()=>onSolved(miss===0?3:(miss<=2?2:1)),900);}
+        else render("Betul, padan.","ok");
+      } else { miss++; sel=null; SND.bad(); render("Tak padan. Cuba lagi.","bad",k); }
+    });
+  }
+  render();
+}
+function firstInto(el,i,open,close,onSolved){
+  const c=CH[i], all=[];
+  for(let a=0;a<c.ev.length;a++) for(let b=a+1;b<c.ev.length;b++) all.push([a,b]);
+  const pairs=shuffle(all).slice(0,4);
+  let r=0, score=0;
+  function round(){
+    const [a,b]=pairs[r], show=Math.random()<.5?[a,b]:[b,a];
+    el.innerHTML=open+
+     '<div><p class="eyebrow">Bab '+(i+1)+' · Mana berlaku dulu?</p><h2>'+esc(c.name)+'</h2></div>'+
+     '<div class="row"><span class="muted small">Pusingan '+(r+1)+' daripada '+pairs.length+'</span><span class="dots">'+pairs.map((_,k)=>'<i class="'+(k<=r?'on':'')+'"></i>').join("")+'</span></div>'+
+     '<p class="muted small">Ketik peristiwa yang berlaku lebih awal.</p>'+
+     '<div class="vs"><button class="opt big" data-x="'+show[0]+'">'+esc(c.ev[show[0]].t)+'</button><span class="or">atau</span><button class="opt big" data-x="'+show[1]+'">'+esc(c.ev[show[1]].t)+'</button></div>'+
+     '<p class="feedback" id="ff"></p><div id="nx"></div>'+close;
+    let answered=false;
+    el.querySelectorAll("[data-x]").forEach(btn=>btn.onclick=()=>{
+      if(answered) return; answered=true;
+      const k=+btn.dataset.x, right=Math.min(a,b), fb=el.querySelector("#ff");
+      el.querySelectorAll("[data-x]").forEach(o=>{const x=+o.dataset.x;o.insertAdjacentHTML("beforeend",'<span class="wl">'+esc(c.ev[x].w)+'</span>');if(x===right)o.classList.add("ok");});
+      if(k===right){score++;SND.ok();fb.className="feedback ok";fb.textContent="Betul.";}
+      else {btn.classList.add("bad");SND.bad();fb.className="feedback bad";fb.textContent="Yang berlaku dulu: "+c.ev[right].t+".";}
+      const last=r===pairs.length-1;
+      el.querySelector("#nx").innerHTML='<button class="btn wide" id="nxb">'+(last?"Selesai":"Pusingan seterusnya")+'</button>';
+      el.querySelector("#nxb").onclick=()=>{ if(!last){r++;round();} else onSolved(score===pairs.length?3:(score===pairs.length-1?2:1)); };
+    });
+  }
+  round();
+}
+function sortInto(el,i,open,close,onSolved){
+  const c=CH[i], n=c.ev.length;
+  const slots=new Array(n).fill(null), locked=new Array(n).fill(false);
+  let pool=shuffle(c.ev.map((_,k)=>k));
+  while(n>1&&pool.every((v,k)=>v===k)) pool=shuffle(pool);
+  let tries=0, busy=false;
+  function render(msg,cls){
+    const full=slots.every(s=>s!==null);
+    el.innerHTML=open+
+     '<div><p class="eyebrow">Bab '+(i+1)+' · Cabaran susun</p><h2>'+esc(c.name)+'</h2></div>'+
+     '<p class="muted">Ketik kad di bawah ikut urutan, dari yang paling awal. Ketik kad dalam senarai untuk keluarkan semula.</p>'+
+     '<ol class="slots">'+slots.map((s,k)=>'<li><button class="slot'+(s!==null?" filled":"")+(locked[k]?" ok":"")+'" data-s="'+k+'"'+(s===null||locked[k]?' tabindex="-1"':'')+'><span class="n">'+(k+1)+'</span><span class="x">'+(s!==null?esc(c.ev[s].t):'<span class="muted">Kosong</span>')+'</span></button></li>').join("")+'</ol>'+
+     (pool.length?'<div class="pool">'+pool.map(e=>'<button class="card" data-e="'+e+'">'+esc(c.ev[e].t)+'</button>').join("")+'</div>':'')+
+     '<p class="feedback '+(cls||"")+'" id="fb">'+(msg||"")+'</p>'+
+     '<div class="row"><button class="btn" id="chk"'+(full&&!busy?"":" disabled")+'>Semak susunan</button><button class="btn ghost" id="clr">Kosongkan</button></div>'+
+     close;
+    el.querySelectorAll(".card").forEach(b=>b.onclick=()=>{
+      if(busy) return; const e=+b.dataset.e, k=slots.indexOf(null); if(k<0) return;
+      slots[k]=e; pool=pool.filter(x=>x!==e); render();
+    });
+    el.querySelectorAll(".slot").forEach(b=>b.onclick=()=>{
+      if(busy) return; const k=+b.dataset.s; if(slots[k]===null||locked[k]) return;
+      pool.push(slots[k]); slots[k]=null; render();
+    });
+    el.querySelector("#clr").onclick=()=>{ if(busy) return; slots.forEach((s,k)=>{if(s!==null&&!locked[k]){pool.push(s);slots[k]=null;}}); render(); };
+    el.querySelector("#chk").onclick=check;
+  }
+  function check(){
+    tries++;
+    const wrong=[];
+    slots.forEach((s,k)=>{ if(s===k) locked[k]=true; else wrong.push(k); });
+    if(!wrong.length){
+      SND.ok();
+      const st=tries===1?3:(tries===2?2:1);
+      busy=true; render("Tepat. Semua peristiwa di tempat yang betul.","ok");
+      setTimeout(()=>onSolved(st),900); return;
+    }
+    busy=true; SND.bad();
+    render(wrong.length+" kad belum di tempat yang betul. Kad yang betul dikunci (hijau).","bad");
+    wrong.forEach(k=>{const sl=el.querySelector('.slot[data-s="'+k+'"]'); if(sl) sl.classList.add("bad");});
+    setTimeout(()=>{ wrong.forEach(k=>{pool.push(slots[k]);slots[k]=null;}); pool=shuffle(pool); busy=false;
+      render("Cuba lagi. Percubaan ke-"+(tries+1)+".","bad"); },1100);
+  }
+  render();
+}
+
+/* ---------- Cabaran Tahap 2: Betul/Salah, Siapa saya?, Peta strategi ---------- */
+function bsInto(el,i,open,close,onSolved){
+  const c=CH[i], items=shuffle(c.bs).slice(0,4);
+  let r=0, sc=0;
+  function round(){
+    const it=items[r];
+    el.innerHTML=open+
+     '<div><p class="eyebrow">'+esc(stTag(i))+' · Betul atau salah?</p><h2>'+esc(c.name)+'</h2></div>'+
+     '<div class="row"><span class="muted small">Kenyataan '+(r+1)+' daripada '+items.length+'</span><span class="dots">'+items.map((_,k)=>'<i class="'+(k<=r?'on':'')+'"></i>').join("")+'</span></div>'+
+     '<p class="bsq">'+esc(it.s)+'</p>'+
+     '<div class="bsrow"><button class="opt big" data-b="1">Betul</button><button class="opt big" data-b="0">Salah</button></div>'+
+     '<p class="feedback" id="ff"></p><p class="explain small" id="fx" hidden></p><div id="nx"></div>'+close;
+    let done=false;
+    el.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{
+      if(done) return; done=true;
+      const v=b.dataset.b==="1", ok=v===it.a, ff=el.querySelector("#ff"), fx=el.querySelector("#fx");
+      el.querySelectorAll("[data-b]").forEach(o=>{ if((o.dataset.b==="1")===it.a) o.classList.add("ok"); });
+      if(ok){ sc++; SND.ok(); ff.className="feedback ok"; ff.textContent="Tepat."; }
+      else { b.classList.add("bad"); SND.bad(); ff.className="feedback bad"; ff.textContent="Belum tepat."; }
+      fx.hidden=false; fx.textContent=it.ex;
+      const last=r===items.length-1;
+      el.querySelector("#nx").innerHTML='<button class="btn wide" id="nxb">'+(last?"Selesai":"Kenyataan seterusnya")+'</button>';
+      el.querySelector("#nxb").onclick=()=>{ if(!last){ r++; round(); } else onSolved(sc===items.length?3:(sc===items.length-1?2:1)); };
+    });
+  }
+  round();
+}
+
+function whoInto(el,i,open,close,onSolved){
+  const c=CH[i], w=c.who[Math.floor(Math.random()*c.who.length)], order=shuffle(w.opts.map((_,k)=>k)), bad=new Set();
+  let shown=1, wrong=0, solved=false;
+  function stars(){ const p=(shown-1)+wrong; return p===0?3:(p===1?2:1); }
+  function render(msg,cls){
+    el.innerHTML=open+
+     '<div><p class="eyebrow">'+esc(stTag(i))+' · Siapa saya?</p><h2>Teka tokoh ini</h2></div>'+
+     '<p class="muted small">Makin sedikit petunjuk yang kamu guna, makin banyak bintang.</p>'+
+     '<ol class="clues">'+w.clues.map((t,k)=>k<shown?'<li>'+esc(t)+'</li>':'<li class="hid">Petunjuk '+(k+1)+' masih tersembunyi</li>').join("")+'</ol>'+
+     '<div class="opts">'+order.map(k=>'<button class="opt'+(bad.has(k)?' bad':'')+(solved&&k===w.a?' ok':'')+'" data-w="'+k+'"'+(bad.has(k)||solved?' disabled':'')+'>'+esc(w.opts[k])+'</button>').join("")+'</div>'+
+     '<p class="feedback '+(cls||"")+'">'+(msg||"")+'</p>'+
+     (solved?'<p class="explain small">'+esc(w.ex)+'</p><button class="btn wide" id="wgo">Teruskan</button>'
+       :(shown<w.clues.length?'<button class="btn ghost wide" id="more">Buka petunjuk seterusnya</button>':''))+
+     close;
+    el.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{
+      if(solved) return; const k=+b.dataset.w;
+      if(k===w.a){ solved=true; SND.ok(); render("Betul.","ok"); }
+      else { bad.add(k); wrong++; SND.bad(); if(shown<w.clues.length) shown++; render("Bukan. "+(shown<=w.clues.length?"Baca petunjuk yang baru dibuka.":""),"bad"); }
+    });
+    const m=el.querySelector("#more"); if(m) m.onclick=()=>{ shown++; render(); };
+    const g=el.querySelector("#wgo"); if(g) g.onclick=()=>onSolved(stars());
+  }
+  render();
+}
+
+const MAPART={
+  badar:()=>
+    '<path class="sm-hill" d="M0 0 H340 V40 C260 58 90 58 0 40 Z"/>'+
+    '<text class="sm-t" x="170" y="22" text-anchor="middle">Khemah Quraisy (tebing jauh)</text>'+
+    '<rect class="sm-foe" x="120" y="30" width="100" height="10" rx="3"/>'+
+    '<path class="sm-hill" d="M240 170 C270 130 330 130 340 150 V190 H250 Z"/>'+
+    '<circle class="sm-water" cx="172" cy="98" r="8"/><circle class="sm-water" cx="120" cy="130" r="7"/><circle class="sm-water" cx="210" cy="140" r="7"/><circle class="sm-water" cx="150" cy="168" r="6"/>'+
+    '<text class="sm-t" x="22" y="140">Telaga-telaga</text><path class="sm-ln" d="M98 136 L112 132"/>'+
+    '<path class="sm-arrow" d="M250 228 L250 212 M244 218 L250 212 L256 218"/><text class="sm-t" x="262" y="226">Arah Madinah</text>',
+  uhud:()=>
+    '<path class="sm-mt" d="M20 64 L70 18 L110 40 L150 8 L200 36 L240 14 L320 64 Z"/>'+
+    '<text class="sm-t sm-tl" x="214" y="56">Jabal Uhud</text>'+
+    '<ellipse class="sm-hill" cx="62" cy="128" rx="34" ry="16"/><text class="sm-t" x="30" y="160">Bukit kecil \'Ainain</text>'+
+    '<rect class="sm-own" x="120" y="84" width="130" height="12" rx="3"/><text class="sm-t" x="185" y="78" text-anchor="middle">Tentera Islam</text>'+
+    '<rect class="sm-foe" x="110" y="170" width="150" height="12" rx="3"/><text class="sm-t" x="185" y="198" text-anchor="middle">Tentera Quraisy</text>'+
+    '<path class="sm-arrow" d="M70 212 C40 190 30 170 40 140" /><text class="sm-t" x="78" y="216">Laluan berkuda musuh</text>'+
+    '<text class="sm-t" x="262" y="230">Madinah</text>',
+  khandaq:()=>
+    '<rect class="sm-lava" x="0" y="44" width="92" height="140" rx="10"/><text class="sm-t sm-tl" x="12" y="176">Harrah (batu lava)</text>'+
+    '<rect class="sm-lava" x="248" y="44" width="92" height="140" rx="10"/><text class="sm-t sm-tl" x="258" y="176">Harrah</text>'+
+    '<circle class="sm-palm" cx="120" cy="196" r="9"/><circle class="sm-palm" cx="146" cy="206" r="9"/><circle class="sm-palm" cx="196" cy="204" r="9"/><circle class="sm-palm" cx="222" cy="194" r="9"/>'+
+    '<text class="sm-t" x="170" y="232" text-anchor="middle">Kebun tamar dan rumah</text>'+
+    '<circle class="sm-town" cx="170" cy="118" r="46"/><text class="sm-t" x="170" y="122" text-anchor="middle">Madinah</text>'+
+    '<text class="sm-t" x="170" y="56" text-anchor="middle">Kawasan terbuka</text>'+
+    '<text class="sm-t" x="324" y="20" text-anchor="middle">U ↑</text>',
+  hunain:()=>
+    '<path class="sm-hill" d="M0 30 C60 40 110 70 128 110 C140 140 130 190 120 240 H0 Z"/>'+
+    '<path class="sm-hill" d="M340 30 C280 40 230 70 212 110 C200 140 210 190 220 240 H340 Z"/>'+
+    '<path class="sm-path" d="M170 240 C166 180 174 120 170 50"/>'+
+    '<text class="sm-t" x="190" y="33">Hujung lembah</text>'+
+    '<rect class="sm-own" x="140" y="178" width="60" height="10" rx="3"/><text class="sm-t" x="170" y="204" text-anchor="middle">Tentera Islam turun</text>'+
+    '<text class="sm-t" x="24" y="186">Lereng</text><text class="sm-t" x="280" y="150">Lereng</text>'
+};
+
+function stratInto(el,i,open,close,onSolved){
+  const c=CH[i], m=c.map, L="ABCD";
+  let tries=0, solved=false; const bad=new Set();
+  function render(msg,cls){
+    el.innerHTML=open+
+     '<div><p class="eyebrow">'+esc(stTag(i))+' · Peta strategi</p><h2>'+esc(c.name)+'</h2></div>'+
+     '<p>'+esc(m.q)+'</p>'+
+     '<svg class="smap" viewBox="0 0 340 240" role="img" aria-label="Peta ringkas '+esc(c.short)+'"><rect class="sm-bg" width="340" height="240" rx="14"/>'+MAPART[m.art]()+
+       m.spots.map((s,k)=>'<g class="sm-spot'+(bad.has(k)?' bad':'')+(solved&&k===m.a?' ok':'')+'" data-p="'+k+'" role="button" tabindex="0" aria-label="'+L[k]+': '+esc(s.l)+'"><circle cx="'+s.x+'" cy="'+s.y+'" r="13"/><text x="'+s.x+'" y="'+(s.y+5)+'" text-anchor="middle">'+L[k]+'</text></g>').join("")+
+     '</svg>'+
+     '<p class="muted small">Gambaran ringkas, bukan peta berskala. Ketik huruf pada peta atau pilihan di bawah.</p>'+
+     '<div class="opts">'+m.spots.map((s,k)=>'<button class="opt'+(bad.has(k)?' bad':'')+(solved&&k===m.a?' ok':'')+'" data-p="'+k+'"'+(bad.has(k)||solved?' disabled':'')+'><b>'+L[k]+'.</b> '+esc(s.l)+'</button>').join("")+'</div>'+
+     '<p class="feedback '+(cls||"")+'">'+(msg||"")+'</p>'+
+     (solved?'<p class="explain small">'+esc(m.ex)+'</p><button class="btn wide" id="sgo">Teruskan</button>':'')+
+     close;
+    const pick=k=>{ if(solved||bad.has(k)) return; tries++;
+      if(k===m.a){ solved=true; SND.ok(); render("Tepat. Itulah strateginya.","ok"); }
+      else { bad.add(k); SND.bad(); render("Bukan di situ. Fikir semula: apa kelebihan yang diperlukan?","bad"); } };
+    el.querySelectorAll("[data-p]").forEach(b=>{ b.onclick=()=>pick(+b.dataset.p); b.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(+b.dataset.p); } }; });
+    const g=el.querySelector("#sgo"); if(g) g.onclick=()=>onSolved(tries===1?3:(tries===2?2:1));
+  }
+  render();
+}
+
+/* ---------- Pilih tahap ---------- */
+function levels(){
+  stash();
+  const sum=a=>(a||[]).reduce((x,y)=>x+y,0);
+  const card=n=>{ const L=LEVELS[n], p=S.lvl[n]||lvBlank(), un=unlocked(n);
+    return '<button class="lvcard'+(n===LVI?' cur':'')+'" data-lv="'+n+'"'+(un?'':' disabled')+'>'+
+      '<span class="eyebrow">'+esc(L.tag)+'</span><b>'+esc(L.name)+'</b><span class="small muted">'+esc(L.world)+'</span>'+
+      '<span class="small lvst">'+(un?(p.done+'/6 '+L.unit.toLowerCase()+' · ★ '+sum(p.stars)+'/18 · ◆ '+sum(p.gems)+'/6'+(p.done>=6?' · Sijil '+L.medal:'')):'Berkunci. Tamatkan '+esc(LEVELS[n-1].tag)+' dulu.')+'</span></button>'; };
+  app.innerHTML='<section class="screen">'+
+   '<div><p class="eyebrow">Pilih tahap</p><h2>Ke mana kita hari ini, '+esc(S.name)+'?</h2></div>'+
+   '<div class="stack">'+card(0)+card(1)+
+   '<div class="lvcard soon" aria-disabled="true"><span class="eyebrow">Tahap 3 · Susah</span><b>Majlis Ilmu</b><span class="small muted">Madinah waktu malam</span><span class="small lvst">Sedang dibina.</span></div></div>'+
+   '<p class="muted small">Markah leaderboard ialah gabungan semua tahap.</p>'+
+   '<button class="btn ghost wide" id="lvback">Menu utama</button></section>';
+  app.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{ const n=+b.dataset.lv; if(!unlocked(n)) return; if(n!==LVI) setLevel(n); if(n===1&&!S.seen2) lvIntro(); else map(); });
+  document.getElementById("lvback").onclick=()=>title(false);
+  top();
+}
+
+function lvIntro(){
+  const lines=[
+    "Tahniah, "+S.name+". Kamu dah tamatkan perjalanan sirah dari Tahun Gajah hingga 11 Hijrah.",
+    "Sekarang Tok bawa kamu ke bukit-bukau sekitar Madinah dan Hijaz. Kita singgah di enam medan: Badar, Uhud, Khandaq, Khaibar, Hunain dan Tabuk.",
+    "Kita tak akan tengok pertempuran. Kita lawat tempatnya, belajar strategi, kenal tokohnya, dan ambil pengajaran daripada ayat al-Quran yang turun.",
+    "Cabaran pun baru: betul atau salah, teka tokoh dengan petunjuk, dan peta strategi. Tamatkan keenam-enam medan untuk dapat Sijil Perak."
+  ];
+  app.innerHTML='<section class="screen">'+
+   '<svg viewBox="0 0 360 150" aria-hidden="true" class="lvart"><rect width="360" height="150" rx="20" class="m-sky"/>'+starsDecor(360,60,10)+
+   '<path d="M0 110 L50 62 L92 92 L150 38 L206 88 L250 58 L300 90 L360 66 V150 H0 Z" class="m-d2"/>'+
+   '<path d="M0 128 C80 108 160 118 230 132 C290 142 330 128 360 122 V150 H0 Z" class="m-d1"/>'+
+   '<path d="M150 38 L150 16" stroke="var(--ink)" stroke-width="2"/><path d="M150 16 L170 21 L150 27 Z" fill="var(--ok)"/></svg>'+
+   '<div><p class="eyebrow">Tahap 2 · Sederhana</p><h2>Medan Ghazwah</h2></div>'+
+   '<div class="panel stack"><p class="eyebrow">Tok Rahim</p>'+lines.map(l=>'<p>'+esc(l)+'</p>').join("")+'</div>'+
+   '<button class="btn wide" id="lvgo">Mula Tahap 2</button><button class="btn ghost wide" id="lvb">Kembali</button></section>';
+  document.getElementById("lvgo").onclick=()=>{ S.seen2=true; save(); map(); };
+  document.getElementById("lvb").onclick=()=>levels();
+  top();
+}
+
+function reveal(i,st){
+  const c=CH[i];
+  app.innerHTML='<section class="screen">'+
+   '<div><p class="eyebrow">Bab '+(i+1)+' · Garis masa</p><h2>Apa yang berlaku</h2></div>'+
+   '<p class="stars" aria-label="'+st+' bintang">'+starStr(st)+'</p>'+
+   '<ol class="tl">'+c.ev.map(e=>'<li><div class="when">'+esc(e.w)+'</div><div class="what">'+esc(e.t)+'</div><div class="why">'+esc(e.d)+'</div></li>').join("")+'</ol>'+
+   '<button class="btn wide" id="go">Jawab soalan penjaga gerbang</button></section>';
+  document.getElementById("go").onclick=()=>quiz(i,st);
+  top();
+}
+
+function quiz(i,st){
+  const c=CH[i], q=pickQ(i), order=shuffle(q.opts.map((_,k)=>k));
+  let first=true, solved=false;
+  app.innerHTML='<section class="screen">'+
+   '<div><p class="eyebrow">Penjaga gerbang · Bab '+(i+1)+'</p><h2>'+esc(q.text)+'</h2></div>'+
+   '<p class="muted small">Jawab betul pada cubaan pertama untuk dapat permata ilmu ◆.</p>'+
+   '<div class="opts">'+order.map(k=>'<button class="opt" data-o="'+k+'">'+esc(q.opts[k])+'</button>').join("")+'</div>'+
+   '<div id="after"></div></section>';
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    if(solved) return;
+    const k=+b.dataset.o;
+    if(k===q.a){
+      solved=true; b.classList.add("ok"); SND.ok();
+      const gem=first?1:0;
+      document.getElementById("after").innerHTML='<div class="stack"><p class="explain">'+esc(q.ex)+'</p><button class="btn wide" id="fin">Selesaikan bab</button></div>';
+      document.getElementById("fin").onclick=()=>finish(i,st,gem);
+      document.getElementById("fin").focus();
+    } else {
+      first=false; b.classList.add("bad"); b.disabled=true; SND.bad();
+    }
+  });
+  top();
+}
+
+function commit(i,st,gem){
+  S.stars[i]=Math.max(S.stars[i],st);
+  S.gems[i]=Math.max(S.gems[i],gem);
+  const first=i===S.done;
+  if(first) S.done=i+1;
+  if(S.done>=6&&!S.finished) S.finished=today();
+  save(); SND.win(); lbPush();
+  return {last:first&&i===5};
+}
+function finish(i,st,gem){
+  const c=CH[i], last=commit(i,st,gem).last;
+  app.innerHTML='<section class="screen">'+
+   '<div class="av-stage">'+avatarSVG(S.av)+'</div>'+
+   '<div style="text-align:center" class="stack"><p class="eyebrow">Bab '+(i+1)+' selesai</p><h2>'+esc(c.name)+'</h2>'+
+   '<p class="stars">'+starStr(st)+'</p>'+
+   '<p class="muted">'+(gem?"Kamu dapat permata ilmu ◆ untuk bab ini.":"Permata ilmu terlepas kali ini. Boleh cuba lagi dengan main semula bab ini.")+'</p></div>'+
+   '<div class="fact stack"><p class="eyebrow">Tahukah kamu</p><p>'+esc(c.fact)+'</p><p class="src">Rujukan: '+esc(c.src)+'</p></div>'+
+   (last?'<button class="btn wide" id="cert">Terima sijil pengembara</button>':'<button class="btn wide" id="go">'+(S.done<6?"Teruskan ke peta":"Kembali ke peta")+'</button>')+
+   '</section>';
+  const g=document.getElementById("go"); if(g) g.onclick=()=>map();
+  const ce=document.getElementById("cert"); if(ce) ce.onclick=()=>cert();
+  top();
+}
+
+function cert(){
+  const LV=LEVELS[LVI];
+  const msg="Saya dah tamatkan "+LV.tag+" Jejak Sirah ("+LV.name+") dan dapat Sijil "+LV.medal+", dengan "+totalStars()+"/18 bintang dan "+totalGems()+"/6 permata ilmu.";
+  app.innerHTML='<section class="screen">'+
+   '<div class="cert m'+LVI+'">'+avatarSVG(S.av,"av")+
+   '<p class="medal">Sijil '+esc(LV.medal)+'</p><p class="eyebrow">'+esc(LV.tag)+' · '+esc(LV.name)+'</p>'+
+   '<p>Dengan ini disahkan bahawa</p><p class="nm">'+esc(S.name)+'</p>'+
+   '<p>'+esc(LV.certLine)+'</p>'+
+   '<p class="tally" style="justify-content:center;font-size:1.1rem"><span>★ '+totalStars()+'/18</span><span>◆ '+totalGems()+'/6</span><span>✧ '+totalScrolls()+'/12</span></p>'+
+   '<p class="muted small">Tarikh: '+esc(S.finished||today())+'</p></div>'+
+   '<p class="muted small" id="cpmsg">Kongsi pencapaian ini bersama link game.</p>'+
+   (LVI===0&&unlocked(1)?'<button class="btn wide" id="nextlv">Teruskan ke Tahap 2: Medan Ghazwah</button>':'')+
+   '<div class="row"><button class="btn" id="cp">Salin ucapan</button><button class="btn ghost" id="map">Ke peta</button><button class="btn ghost" id="lbc">Leaderboard</button><button class="btn ghost" id="again">Main dari awal</button></div>'+
+   '<div id="cf"></div></section>';
+  document.getElementById("cp").onclick=()=>{
+    const out=document.getElementById("cpmsg");
+    try{ navigator.clipboard.writeText(msg).then(()=>{out.textContent="Ucapan disalin. Tampal bersama link game ini.";},()=>{out.textContent=msg;}); }catch(e){ out.textContent=msg; }
+  };
+  document.getElementById("map").onclick=()=>map();
+  const nl=document.getElementById("nextlv"); if(nl) nl.onclick=()=>{ setLevel(1); if(!S.seen2) lvIntro(); else map(); };
+  document.getElementById("lbc").onclick=()=>board(()=>cert());
+  document.getElementById("again").onclick=()=>{
+    document.getElementById("cf").innerHTML='<div class="panel confirm"><b>Padam kemajuan '+esc(LV.tag)+' dan mula semula? Watak dan tahap lain dikekalkan.</b><div class="row"><button class="btn" id="yes">Ya, mula semula</button><button class="btn ghost" id="no">Batal</button></div></div>';
+    document.getElementById("yes").onclick=()=>{Object.assign(S,lvBlank());save();lbPush();map();};
+    document.getElementById("no").onclick=()=>{document.getElementById("cf").innerHTML="";};
+  };
+  top();
+}
+
+/* ---------- 3D world (three.js r128) ---------- */
+function HAS3D_check(){try{if(!window.THREE)return false;const c=document.createElement("canvas");return !!(c.getContext("webgl")||c.getContext("experimental-webgl"));}catch(e){return false;}}
+const HAS3D=HAS3D_check();
+const G={r:null,host:null,scene:null,cam:null,frame:null,ptr:null,clock:null};
+function isDark(){const t=document.documentElement.getAttribute("data-theme");if(t)return t==="dark";return !!(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches);}
+function mat(c){return new THREE.MeshStandardMaterial({color:c,flatShading:true,roughness:.95,metalness:0});}
+function dispose3D(o){o.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});}
+function fit3D(){if(!G.r||!G.host||!G.host.isConnected)return;const w=G.host.clientWidth,h=G.host.clientHeight;if(!w||!h)return;G.r.setSize(w,h,false);G.cam.aspect=w/h;G.cam.updateProjectionMatrix();}
+function mount3D(host,scene,cam,frame,ptr){
+  if(!G.r){
+    const r=new THREE.WebGLRenderer({antialias:true});
+    r.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    r.shadowMap.enabled=true; r.shadowMap.type=THREE.PCFSoftShadowMap;
+    const el=r.domElement; el.style.cssText="display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab";
+    el.addEventListener("pointerdown",e=>{if(G.ptr)G.ptr.down(e);});
+    el.addEventListener("pointermove",e=>{if(G.ptr)G.ptr.move(e);});
+    el.addEventListener("pointerup",e=>{if(G.ptr)G.ptr.up(e);});
+    el.addEventListener("pointercancel",()=>{if(G.ptr)G.ptr.cancel();});
+    G.r=r; G.clock=new THREE.Clock();
+    (function loop(){requestAnimationFrame(loop);const dt=Math.min(G.clock.getDelta(),0.05);
+      if(!G.host||!G.host.isConnected||!G.scene)return;
+      if(G.r.domElement.width<2) fit3D();
+      if(G.frame)G.frame(dt);G.r.render(G.scene,G.cam);})();
+    window.addEventListener("resize",fit3D);
+  }
+  if(G.scene&&G.scene!==scene&&G.scene.userData.disposable) dispose3D(G.scene);
+  G.host=host;G.scene=scene;G.cam=cam;G.frame=frame;G.ptr=ptr||null;
+  host.appendChild(G.r.domElement); fit3D();
+}
+
+function makeAvatar(a){
+  const g=new THREE.Group(), sk=mat(SKINS[a.skin]), oc=mat(OUTFITS[a.outfit][1]), hc=mat(HEADC[a.headColor]);
+  const h=HEADS[a.head][0], it=ITEMS[a.item][0];
+  const add=(geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;g.add(o);return o;};
+  add(new THREE.CylinderGeometry(0.42,0.75,1.5,16),oc,0,0.75,0);
+  add(new THREE.SphereGeometry(0.43,16,8,0,Math.PI*2,0,Math.PI/2),oc,0,1.48,0);
+  const sl=new THREE.CylinderGeometry(0.13,0.17,0.8,10), hand=new THREE.SphereGeometry(0.13,10,8);
+  const L=add(sl,oc,-0.52,1.15,0.05), R=add(sl,oc,0.52,1.15,0.05);
+  L.rotation.z=-0.35; R.rotation.z=0.35;
+  let hl=[-0.66,0.78,0.12], hr=[0.66,0.78,0.12];
+  if(it==="kitab"){
+    L.position.set(-0.4,1.18,0.25); L.rotation.set(-1.0,0,-0.25);
+    R.position.set(0.4,1.18,0.25); R.rotation.set(-1.0,0,0.25);
+    hl=[-0.24,1.0,0.56]; hr=[0.24,1.0,0.56];
+    add(new THREE.BoxGeometry(0.6,0.42,0.1),mat("#3E6B5A"),0,1.02,0.58);
+    add(new THREE.BoxGeometry(0.03,0.42,0.11),mat("#E9D5A8"),0,1.02,0.585);
+  }
+  add(hand,sk,hl[0],hl[1],hl[2]); add(hand,sk,hr[0],hr[1],hr[2]);
+  if(it==="tongkat") add(new THREE.CylinderGeometry(0.05,0.05,2.2,8),mat("#8B5E34"),0.72,1.0,0.14);
+  if(it==="beg"){ add(new THREE.BoxGeometry(0.66,0.78,0.32),mat("#7A5230"),0,1.1,-0.52); add(new THREE.BoxGeometry(0.5,0.25,0.06),mat("#6B4423"),0,0.95,-0.7); }
+  add(new THREE.CylinderGeometry(0.13,0.15,0.22,10),sk,0,1.62,0);
+  add(new THREE.SphereGeometry(0.38,20,16),sk,0,1.98,0);
+  const eye=new THREE.SphereGeometry(0.045,8,6), em=mat("#2B1D14");
+  add(eye,em,-0.13,2.02,0.345); add(eye,em,0.13,2.02,0.345);
+  const sm=add(new THREE.TorusGeometry(0.085,0.02,6,12,Math.PI),mat("#7A3B2B"),0,1.92,0.35); sm.rotation.z=Math.PI;
+  const cheek=new THREE.MeshStandardMaterial({color:"#E08A7A",transparent:true,opacity:.45,roughness:1});
+  add(new THREE.SphereGeometry(0.06,8,6),cheek,-0.2,1.94,0.31); add(new THREE.SphereGeometry(0.06,8,6),cheek,0.2,1.94,0.31);
+  if(h==="tiada") add(new THREE.SphereGeometry(0.4,20,12,0,Math.PI*2,0,Math.PI*0.42),mat("#2B1D14"),0,1.99,-0.02);
+  if(h==="kopiah") add(new THREE.SphereGeometry(0.4,20,12,0,Math.PI*2,0,Math.PI*0.36),hc,0,2.0,0);
+  if(h==="songkok") add(new THREE.CylinderGeometry(0.37,0.4,0.32,20),hc,0,2.27,0);
+  if(h==="serban"){ const t=add(new THREE.TorusGeometry(0.31,0.13,10,20),hc,0,2.2,0); t.rotation.x=Math.PI/2; add(new THREE.SphereGeometry(0.35,16,10,0,Math.PI*2,0,Math.PI/2),hc,0,2.22,0); }
+  if(h==="tudung"){
+    const shell=new THREE.MeshStandardMaterial({color:HEADC[a.headColor],flatShading:true,roughness:.95,side:THREE.DoubleSide});
+    add(new THREE.SphereGeometry(0.45,24,16,Math.PI/2+0.78,Math.PI*2-1.56,0,Math.PI*0.78),shell,0,1.98,0);
+    add(new THREE.SphereGeometry(0.452,24,10,0,Math.PI*2,0,Math.PI*0.3),shell,0,1.98,0);
+    add(new THREE.CylinderGeometry(0.42,0.82,0.7,20),shell,0,1.5,0);
+  }
+  return g;
+}
+
+let PV=null;
+function mountPreview(host,a){
+  if(!PV){
+    const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(34,1,0.1,100);
+    cam.position.set(0,2.1,6.4); cam.lookAt(0,1.25,0);
+    sc.add(new THREE.HemisphereLight(0xffffff,0x8a7a60,0.85));
+    const d=new THREE.DirectionalLight(0xffffff,0.75); d.position.set(3,6,5); d.castShadow=true; d.shadow.mapSize.set(512,512); sc.add(d);
+    const disc=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.6,0.2,40),mat("#D9BB80")); disc.position.y=-0.1; disc.receiveShadow=true; sc.add(disc);
+    PV={sc,cam,av:null,ang:0};
+  }
+  PV.sc.background=new THREE.Color(isDark()?"#1F2241":"#FBF5E8");
+  if(PV.av){PV.sc.remove(PV.av);dispose3D(PV.av);}
+  PV.av=makeAvatar(a); PV.sc.add(PV.av);
+  let drag=null, spin=0;
+  mount3D(host,PV.sc,PV.cam,dt=>{ if(!drag){PV.ang+=reduce?0:dt*0.7;} PV.av.rotation.y=Math.sin(PV.ang)*0.9+spin; },
+    {down:e=>{drag={x:e.clientX};}, move:e=>{if(!drag)return;spin+=(e.clientX-drag.x)*0.012;drag.x=e.clientX;}, up:()=>{drag=null;}, cancel:()=>{drag=null;}});
+}
+
+function h1(x,z){return Math.sin(x*0.09)*1.1+Math.cos(z*0.07)*1.3+Math.sin((x+z)*0.16)*0.45;}
+const ST=[[0,48],[-13,34],[12,20],[-11,6],[13,-8],[-10,-22],[0,-36]];
+function rng(seed){return function(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646;};}
+
+/* Tahap 2 terrain: a valley of hills around the trail */
+const HILLS=[[-31,42,12,9],[33,28,13,10],[-34,6,14,10],[31,-12,11,9],[-30,-34,13,10],[35,-48,15,11],[-22,72,9,10],[26,64,8,9],[0,-74,13,14],[-52,-62,12,12],[52,46,11,12],[-50,24,10,10],[50,-4,10,10]];
+function h2(x,z){ let h=Math.sin(x*0.08)*1.0+Math.cos(z*0.065)*1.2+Math.sin((x+z)*0.15)*0.4+0.0032*x*x;
+  for(let k=0;k<HILLS.length;k++){ const q=HILLS[k], dx=x-q[0], dz=z-q[1]; h+=q[2]*Math.exp(-(dx*dx+dz*dz)/(q[3]*q[3])); }
+  return h; }
+function heightAt(x,z){ return LVI===1?h2(x,z):h1(x,z); }
+
+function makeTent(color,dark){
+  const g=new THREE.Group();
+  const t=new THREE.Mesh(new THREE.ConeGeometry(1.7,2.3,4),mat(color)); t.position.y=1.15; t.rotation.y=Math.PI/4; t.castShadow=true; t.receiveShadow=true; g.add(t);
+  const d=new THREE.Mesh(new THREE.BoxGeometry(0.6,1.0,0.05),mat("#2A2034")); d.position.set(0,0.5,1.19); g.add(d);
+  return g;
+}
+function makeBanner(color){
+  const g=new THREE.Group();
+  const p=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,3.4,6),mat("#6B4A2E")); p.position.y=1.7; p.castShadow=true; g.add(p);
+  const f=new THREE.Mesh(new THREE.BoxGeometry(1.1,0.7,0.04),mat(color)); f.position.set(0.58,3.0,0); f.castShadow=true; g.add(f);
+  g.userData.flag=f; return g;
+}
+function palmIn(g,px,pz,s,dark){
+  const q=new THREE.Group(); q.position.set(px,0,pz); q.scale.setScalar(s);
+  const tr=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.28,4.2,6),mat(dark?"#7A6A58":"#8B6A45")); tr.position.y=2.1; tr.castShadow=true; q.add(tr);
+  const lm=mat(dark?"#5F8456":"#5E7F4F");
+  for(let k=0;k<6;k++){ const p=new THREE.Group(); p.position.y=4.15; p.rotation.y=k/6*Math.PI*2;
+    const lf=new THREE.Mesh(new THREE.ConeGeometry(0.42,2.6,4),lm); lf.position.x=1.15; lf.rotation.z=-Math.PI/2-0.45; lf.scale.z=0.35; lf.castShadow=true; p.add(lf); q.add(p); }
+  g.add(q);
+}
+function landmark2(sc,i,x,z,dark){
+  const g=new THREE.Group(); g.position.set(x,heightAt(x,z)-0.3,z); g.scale.setScalar(0.78);
+  const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
+  const rock=mat(dark?"#6A5E80":"#9B6B4A"), bas=mat(dark?"#3A3550":"#4A403C"), sand=mat(dark?"#7E7698":"#D9BF8E"), stone=mat(dark?"#8C86A8":"#B9A27E"), water=new THREE.MeshStandardMaterial({color:"#3F7FA6",roughness:.25,metalness:.1,emissive:new THREE.Color("#1E4F70"),emissiveIntensity:.25});
+  const tc=dark?["#B8B0CC","#8C7AA0"]:["#EDE3CF","#C9A97A"];
+  const tent=(px,pz,k,ry)=>{const t=makeTent(tc[k%2],dark);t.position.set(px,0.3,pz);t.rotation.y=ry||0;g.add(t);};
+  const flag=(px,pz,c,h)=>{const b=makeBanner(c);b.position.set(px,h||0.3,pz);g.add(b);};
+  if(i===0){ // Badar: wells, dune, camp
+    [[-2.6,0.4],[1.6,1.8],[0.2,-2.4]].forEach(p=>{ add(new THREE.CylinderGeometry(0.95,1.05,0.8,12),stone,p[0],0.7,p[1]); add(new THREE.CylinderGeometry(0.72,0.72,0.06,14),water,p[0],1.12,p[1]); });
+    add(new THREE.SphereGeometry(4.5,12,8),sand,-6,-2.2,-5).scale.set(1.4,1,1);
+    tent(5,-2,0,0.3); tent(6.5,2.2,1,-0.4); tent(3.4,4.6,0,0.8); flag(4.2,0.4,"#2F7D62"); flag(1.6,5.4,"#F2EEE3");
+  }
+  if(i===1){ // Uhud: long reddish mountain + small archers' hill
+    add(new THREE.ConeGeometry(7,10,7),rock,0,4.6,-3); add(new THREE.ConeGeometry(5.5,8,7),rock,-7,3.6,-2); add(new THREE.ConeGeometry(5,7.5,7),rock,7,3.4,-2.5); add(new THREE.ConeGeometry(4,5.5,6),rock,-12,2.4,-1);
+    add(new THREE.ConeGeometry(2.6,2.2,9),sand,4,1.2,5); flag(4,5,"#2F7D62",2.2);
+  }
+  if(i===2){ // Khandaq: a long dark trench with a mound of dug earth, palms behind
+    add(new THREE.BoxGeometry(15,0.24,1.9),mat("#241C20"),0,0.42,0);
+    add(new THREE.BoxGeometry(15,0.7,1.2),mat(dark?"#6E5F70":"#A67E52"),0,0.55,-1.7).rotation.x=0.15;
+    [[-5,-5],[-1.5,-6],[2.5,-5.4],[6,-6.2]].forEach(p=>palmIn(g,p[0],p[1],0.85,dark));
+    add(new THREE.DodecahedronGeometry(1.6),bas,-8.8,0.6,2.5); add(new THREE.DodecahedronGeometry(1.2),bas,8.6,0.5,2.2);
+  }
+  if(i===3){ // Khaibar: fort on a rocky mound, palms
+    const fw=mat(dark?"#8E83A0":"#B59A78");
+    add(new THREE.DodecahedronGeometry(4.2),rock,0,0.2,0).scale.set(1.4,0.55,1.2);
+    add(new THREE.BoxGeometry(7,2.4,0.6),fw,0,3.0,2.6); add(new THREE.BoxGeometry(7,2.4,0.6),fw,0,3.0,-2.6); add(new THREE.BoxGeometry(0.6,2.4,5.2),fw,-3.2,3.0,0); add(new THREE.BoxGeometry(0.6,2.4,5.2),fw,3.2,3.0,0);
+    [[-3.2,2.6],[3.2,2.6],[-3.2,-2.6],[3.2,-2.6]].forEach(p=>{ add(new THREE.CylinderGeometry(0.9,1.0,3.6,8),fw,p[0],3.6,p[1]); add(new THREE.ConeGeometry(1.05,0.9,8),mat(dark?"#6E6488":"#8E6E50"),p[0],5.85,p[1]); });
+    [[-7,4],[7,4.5],[-6.5,-4],[6.8,-3.6],[0,6.5]].forEach(p=>palmIn(g,p[0],p[1],0.8,dark));
+  }
+  if(i===4){ // Hunain: two rocky ridges forming a narrow pass
+    add(new THREE.DodecahedronGeometry(3),bas,-4.2,1.6,0).scale.set(1.1,1.3,2.6);
+    add(new THREE.DodecahedronGeometry(3),bas,4.2,1.6,0.5).scale.set(1.1,1.4,2.6);
+    add(new THREE.DodecahedronGeometry(2),rock,-6.5,1,-5); add(new THREE.DodecahedronGeometry(1.8),rock,6.6,0.9,-5.4);
+  }
+  if(i===5){ // Tabuk: oasis spring, palms, camp
+    add(new THREE.CylinderGeometry(3.2,3.4,0.2,20),water,0,0.42,0);
+    add(new THREE.TorusGeometry(3.3,0.35,6,24),stone,0,0.45,0).rotation.x=Math.PI/2;
+    for(let k=0;k<6;k++){ const a=k/6*Math.PI*2+0.3; palmIn(g,Math.cos(a)*5,Math.sin(a)*5,0.9,dark); }
+    tent(-7,3,0,0.2); tent(-7.5,-2,1,-0.5); tent(7.2,2.4,1,0.6); flag(-5.5,5.6,"#2F7D62"); flag(6,-3,"#F2EEE3");
+  }
+  sc.add(g);
+}
+
+
+function labelSprite(top,main,state){
+  const c=document.createElement("canvas"); c.width=512; c.height=200; const x=c.getContext("2d");
+  const bg=state==="locked"?"rgba(58,54,80,.78)":(state==="done"?"rgba(47,125,98,.94)":(state==="start"?"rgba(42,36,64,.85)":"rgba(184,104,26,.96)"));
+  const r=40,w=500,h=188,ox=6,oy=6;
+  x.beginPath();x.moveTo(ox+r,oy);x.lineTo(ox+w-r,oy);x.quadraticCurveTo(ox+w,oy,ox+w,oy+r);x.lineTo(ox+w,oy+h-r);x.quadraticCurveTo(ox+w,oy+h,ox+w-r,oy+h);x.lineTo(ox+r,oy+h);x.quadraticCurveTo(ox,oy+h,ox,oy+h-r);x.lineTo(ox,oy+r);x.quadraticCurveTo(ox,oy,ox+r,oy);x.closePath();
+  x.fillStyle=bg; x.fill();
+  x.fillStyle="#FFFFFF"; x.textAlign="center";
+  x.font="600 42px Figtree, 'Segoe UI', sans-serif"; x.fillText(top,256,74);
+  x.font="700 62px 'Reem Kufi', 'Trebuchet MS', sans-serif"; x.fillText(main,256,152);
+  const t=new THREE.CanvasTexture(c);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,fog:false}));
+  s.scale.set(5,1.95,1); return s;
+}
+
+function palm(sc,x,z,s,dark){
+  const g=new THREE.Group(), y=heightAt(x,z); g.position.set(x,y,z); g.scale.setScalar(s);
+  const tr=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.28,4.2,6),mat(dark?"#7A6A58":"#8B6A45")); tr.position.y=2.1; tr.rotation.z=0.08; tr.castShadow=true; g.add(tr);
+  const lm=mat(dark?"#5F8456":"#5E7F4F");
+  for(let k=0;k<7;k++){ const p=new THREE.Group(); p.position.y=4.15; p.rotation.y=k/7*Math.PI*2;
+    const lf=new THREE.Mesh(new THREE.ConeGeometry(0.42,2.6,4),lm); lf.position.x=1.15; lf.rotation.z=-Math.PI/2-0.45; lf.scale.z=0.35; lf.castShadow=true; p.add(lf); g.add(p); }
+  sc.add(g);
+}
+
+function landmark(sc,i,x,z,dark){
+  const g=new THREE.Group(); g.position.set(x,heightAt(x,z)-0.3,z); g.scale.setScalar(0.78);
+  const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);o.castShadow=true;o.receiveShadow=true;g.add(o);return o;};
+  const rock=mat(dark?"#6C6488":"#A9825A"), dkr=mat("#241C2C");
+  if(i===0){
+    add(new THREE.BoxGeometry(4,4.4,3.6),mat("#1E1E24"),0,2.2,0);
+    add(new THREE.BoxGeometry(4.06,0.35,3.66),mat("#C9A13A"),0,3.4,0);
+    const hm=mat(dark?"#8C86A8":"#E8D3A8");
+    [[-6.5,2],[6.5,-1],[-5.5,-5.5],[5.5,5],[0.5,7.5],[-1,-8]].forEach((p,n)=>{add(new THREE.BoxGeometry(2.4,1.6+(n%3)*0.6,2.2),hm,p[0],0.9+(n%3)*0.3,p[1]);});
+  }
+  if(i===1){
+    add(new THREE.ConeGeometry(7,10,7),rock,0,4.5,0);
+    add(new THREE.ConeGeometry(4,6,6),rock,-6,2.5,-3);
+    add(new THREE.SphereGeometry(0.8,8,6),dkr,0,6.4,2.15);
+  }
+  if(i===2){
+    const gr=mat(dark?"#55704F":"#7E9A5E");
+    add(new THREE.ConeGeometry(5,5,8),gr,0,2.2,0); add(new THREE.ConeGeometry(3.5,3.6,7),gr,5,1.5,-2); add(new THREE.ConeGeometry(3,3,7),gr,-4.5,1.2,3);
+    const tm=mat(dark?"#4E7448":"#6F9A50"), tk=mat("#7A5230");
+    [[-2,5],[3,4],[6,2.5],[-6,-1]].forEach(p=>{add(new THREE.CylinderGeometry(0.15,0.2,1.2,6),tk,p[0],0.6,p[1]);add(new THREE.SphereGeometry(0.9,8,6),tm,p[0],1.6,p[1]);});
+  }
+  if(i===3){
+    add(new THREE.DodecahedronGeometry(4.6),rock,0,3,0);
+    add(new THREE.DodecahedronGeometry(2.6),rock,4.5,1.4,2);
+    add(new THREE.DodecahedronGeometry(1.8),rock,-4,1,3);
+    add(new THREE.SphereGeometry(1,8,6),dkr,1.2,2.2,4.1);
+  }
+  if(i===4){
+    const brick=mat(dark?"#9A7E66":"#C79B66"), trunk=mat("#7A5A3A"), frond=mat(dark?"#6E6A44":"#8A7A4A");
+    add(new THREE.BoxGeometry(10,0.3,8),mat(dark?"#8E86A0":"#E6D2A6"),0,0.15,0);
+    add(new THREE.BoxGeometry(10,1.5,0.4),brick,0,1,-3.8); add(new THREE.BoxGeometry(0.4,1.5,8),brick,-4.8,1,0); add(new THREE.BoxGeometry(0.4,1.5,8),brick,4.8,1,0);
+    for(let k=0;k<4;k++){ add(new THREE.CylinderGeometry(0.2,0.24,2.7,6),trunk,-3.3+k*2.2,1.6,-1.2); add(new THREE.CylinderGeometry(0.2,0.24,2.7,6),trunk,-3.3+k*2.2,1.6,-3.3); }
+    add(new THREE.BoxGeometry(9.4,0.22,3.2),frond,0,3.0,-2.3);
+  }
+  if(i===5){
+    add(new THREE.ConeGeometry(6,5,9),mat(dark?"#7A7296":"#C2A27A"),0,2.3,0);
+    add(new THREE.DodecahedronGeometry(1.2),rock,4,0.6,3); add(new THREE.DodecahedronGeometry(0.9),rock,-4,0.5,-2);
+  }
+  sc.add(g);
+}
+
+function makeAnimal(kind,r){
+  const g=new THREE.Group(), head=new THREE.Group();
+  g.userData={kind:kind,head:head,ph:r()*6.28};
+  const add=(par,geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;par.add(o);return o;};
+  const legs=(m,len,rad,xs,zs)=>{[[-xs,zs],[xs,zs],[-xs,-zs],[xs,-zs]].forEach(q=>add(g,new THREE.CylinderGeometry(rad,rad*0.8,len,6),m,q[0],len/2,q[1]));};
+  const eye=mat("#1E1612");
+  if(kind==="unta"){
+    const m=mat(["#C49A5A","#B98A4E","#D2AE74"][Math.floor(r()*3)]);
+    add(g,new THREE.SphereGeometry(1,12,8),m,0,2.1,0).scale.set(0.72,0.62,1.45);
+    add(g,new THREE.SphereGeometry(0.7,10,8),m,0,2.7,-0.1).scale.set(0.85,0.85,1.15);
+    if(r()<0.6) add(g,new THREE.BoxGeometry(1.25,0.1,1.0),mat(["#8A3B3B","#3F5A8A","#2F7D62"][Math.floor(r()*3)]),0,3.3,-0.1);
+    legs(m,1.8,0.12,0.38,0.85);
+    head.position.set(0,2.3,1.25); g.add(head);
+    add(head,new THREE.CylinderGeometry(0.16,0.24,1.5,8),m,0,0.6,0.35).rotation.x=0.5;
+    add(head,new THREE.BoxGeometry(0.34,0.36,0.78),m,0,1.32,0.85);
+    add(head,new THREE.SphereGeometry(0.05,6,4),eye,-0.18,1.42,0.95); add(head,new THREE.SphereGeometry(0.05,6,4),eye,0.18,1.42,0.95);
+  }
+  if(kind==="keldai"){
+    const m=mat("#8E8781"), lt=mat("#D8D2C8");
+    add(g,new THREE.SphereGeometry(1,12,8),m,0,1.25,0).scale.set(0.48,0.48,0.95);
+    legs(m,1.05,0.08,0.24,0.55);
+    head.position.set(0,1.45,0.8); g.add(head);
+    add(head,new THREE.CylinderGeometry(0.12,0.17,0.7,8),m,0,0.25,0.15).rotation.x=0.6;
+    add(head,new THREE.BoxGeometry(0.26,0.3,0.62),m,0,0.6,0.48);
+    add(head,new THREE.BoxGeometry(0.24,0.22,0.16),lt,0,0.54,0.8);
+    add(head,new THREE.ConeGeometry(0.06,0.4,5),m,-0.09,0.92,0.32); add(head,new THREE.ConeGeometry(0.06,0.4,5),m,0.09,0.92,0.32);
+    add(head,new THREE.SphereGeometry(0.035,6,4),eye,-0.13,0.66,0.62); add(head,new THREE.SphereGeometry(0.035,6,4),eye,0.13,0.66,0.62);
+  }
+  if(kind==="kambing"){
+    const m=mat(["#F2EEE3","#5B4636","#2B2B2B","#B98A5A"][Math.floor(r()*4)]), hn=mat("#8C7B66");
+    add(g,new THREE.SphereGeometry(1,10,8),m,0,0.75,0).scale.set(0.33,0.32,0.58);
+    legs(m,0.6,0.05,0.15,0.32);
+    head.position.set(0,0.88,0.48); g.add(head);
+    add(head,new THREE.BoxGeometry(0.2,0.22,0.36),m,0,0.08,0.16);
+    const h1=add(head,new THREE.ConeGeometry(0.04,0.3,5),hn,-0.06,0.28,0.02); h1.rotation.x=-0.6;
+    const h2=add(head,new THREE.ConeGeometry(0.04,0.3,5),hn,0.06,0.28,0.02); h2.rotation.x=-0.6;
+    add(head,new THREE.ConeGeometry(0.04,0.14,5),hn,0,-0.1,0.28).rotation.x=Math.PI;
+    add(head,new THREE.SphereGeometry(0.025,6,4),eye,-0.1,0.13,0.26); add(head,new THREE.SphereGeometry(0.025,6,4),eye,0.1,0.13,0.26);
+  }
+  if(kind==="kuda"){
+    const m=mat(["#6B4226","#8B5A2B","#3B2A20","#D8CFC0"][Math.floor(r()*4)]), mn=mat("#2A1E16");
+    add(g,new THREE.SphereGeometry(1,12,8),m,0,1.55,0).scale.set(0.5,0.52,1.1);
+    legs(m,1.3,0.09,0.27,0.7);
+    add(g,new THREE.CylinderGeometry(0.05,0.12,0.9,6),mn,0,1.35,-1.15).rotation.x=0.5;
+    head.position.set(0,1.85,0.9); g.add(head);
+    add(head,new THREE.CylinderGeometry(0.16,0.25,0.95,8),m,0,0.3,0.12).rotation.x=0.55;
+    add(head,new THREE.BoxGeometry(0.28,0.3,0.72),m,0,0.68,0.5).rotation.x=0.35;
+    add(head,new THREE.BoxGeometry(0.06,0.55,0.55),mn,0,0.55,-0.02).rotation.x=0.55;
+    add(head,new THREE.ConeGeometry(0.05,0.2,4),m,-0.09,0.92,0.3); add(head,new THREE.ConeGeometry(0.05,0.2,4),m,0.09,0.92,0.3);
+    add(head,new THREE.SphereGeometry(0.035,6,4),eye,-0.14,0.76,0.62); add(head,new THREE.SphereGeometry(0.035,6,4),eye,0.14,0.76,0.62);
+  }
+  return g;
+}
+
+function buildWorld(onEnter,hooks){
+  hooks=hooks||{};
+  const dark=isDark(), V=THREE.Vector3;
+  const sc=new THREE.Scene(); sc.userData.disposable=true;
+  const T2=LVI===1;
+  const sky=new THREE.Color(dark?(T2?"#17142B":"#141731"):(T2?"#E7D8C2":"#D9E6EC")); sc.background=sky; sc.fog=new THREE.Fog(sky,T2?40:45,T2?135:150);
+  sc.add(new THREE.HemisphereLight(dark?0x9aa6ff:0xeaf2ff, dark?0x2a2440:0x9a7448, dark?0.6:0.55));
+  const sun=new THREE.DirectionalLight(dark?0xc4ccff:0xffe6c0, dark?0.55:0.85);
+  sun.castShadow=true; sun.shadow.mapSize.set(1024,1024);
+  Object.assign(sun.shadow.camera,{left:-28,right:28,top:28,bottom:-28,near:1,far:160});
+  sun.shadow.camera.updateProjectionMatrix(); sc.add(sun); sc.add(sun.target);
+
+  const geo=new THREE.PlaneGeometry(320,320,110,110); geo.rotateX(-Math.PI/2);
+  const pos=geo.attributes.position; for(let k=0;k<pos.count;k++) pos.setY(k,heightAt(pos.getX(k),pos.getZ(k)));
+  geo.computeVertexNormals();
+  const ground=new THREE.Mesh(geo,mat(dark?(T2?"#433C62":"#4A4870"):(T2?"#C29C70":"#D2AE74"))); ground.receiveShadow=true; sc.add(ground);
+
+  if(dark){
+    const r=rng(5), arr=[];
+    for(let k=0;k<600;k++){const th=r()*Math.PI*2, ph=r()*Math.PI*0.42, R=200; arr.push(R*Math.sin(ph)*Math.cos(th), R*Math.cos(ph)*0.8+10, R*Math.sin(ph)*Math.sin(th));}
+    const sg=new THREE.BufferGeometry(); sg.setAttribute("position",new THREE.Float32BufferAttribute(arr,3));
+    sc.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:1.1,fog:false})));
+    const moon=new THREE.Mesh(new THREE.SphereGeometry(7,20,14),new THREE.MeshBasicMaterial({color:"#F3E7C4",fog:false})); moon.position.set(-70,85,-170); sc.add(moon);
+  } else {
+    const s=new THREE.Mesh(new THREE.SphereGeometry(9,20,14),new THREE.MeshBasicMaterial({color:"#FFE9B0",fog:false})); s.position.set(80,70,-190); sc.add(s);
+  }
+
+  const curve=new THREE.CatmullRomCurve3(ST.map(p=>new V(p[0],heightAt(p[0],p[1]),p[1])));
+  const stoneG=new THREE.CylinderGeometry(0.55,0.65,0.18,7), stoneM=mat(dark?"#8C7FA8":"#B98E55");
+  for(let k=0;k<=180;k+=2){const p=curve.getPoint(k/180);const s=new THREE.Mesh(stoneG,stoneM);s.position.set(p.x,heightAt(p.x,p.z)+0.06,p.z);s.rotation.y=k;s.receiveShadow=true;sc.add(s);}
+
+  const picks=[], gems=[], labels=[], info=[];
+  const st=labelSprite("Titik","Mula","start"); st.scale.set(3.4,1.33,1); st.position.set(ST[0][0]+4,heightAt(ST[0][0],ST[0][1])+3.2,ST[0][1]); sc.add(st);
+  for(let i=0;i<6;i++){
+    const k=i+1, x=ST[k][0], z=ST[k][1], tan=curve.getTangent(k/6), perp=new V(-tan.z,0,tan.x).normalize(), side=x<0?-1:1;
+    const sgn=(perp.x*side>=0)?1:-1;
+    const mx=x+perp.x*3.4*sgn, mz=z+perp.z*3.4*sgn, my=heightAt(mx,mz);
+    const state=i<S.done?"done":(i===S.done?"open":"locked");
+    const ped=new THREE.Mesh(new THREE.CylinderGeometry(0.9,1.2,0.8,8),mat(dark?"#6E6A90":"#C9A46A"));
+    ped.position.set(mx,my+0.4,mz); ped.castShadow=true; ped.userData.ch=i; sc.add(ped); picks.push(ped);
+    const gc=state==="done"?"#2F9D72":(state==="open"?"#E8A050":"#8A8698");
+    const gm=new THREE.MeshStandardMaterial({color:gc,flatShading:true,roughness:.4,emissive:new THREE.Color(gc),emissiveIntensity:state==="locked"?0.05:0.4});
+    const gem=new THREE.Mesh(new THREE.OctahedronGeometry(0.75),gm);
+    gem.position.set(mx,my+2.3,mz); gem.castShadow=true; gem.userData={ch:i,base:my+2.3,open:state==="open"}; sc.add(gem); picks.push(gem); gems.push(gem);
+    const top=state==="done"?stTag(i)+"  "+"★".repeat(S.stars[i]):(state==="locked"?stTag(i)+" · berkunci":stTag(i)+" · seterusnya");
+    const lab=labelSprite(top,CH[i].short,state); lab.position.set(mx,my+5.2,mz); lab.userData.ch=i; sc.add(lab); picks.push(lab); labels.push(lab);
+    info.push({p:new V(x,heightAt(x,z),z),tan:tan,perp:perp,sgn:sgn});
+    (T2?landmark2:landmark)(sc,i,x-perp.x*10*sgn,z-perp.z*10*sgn,dark);
+    if(T2){ [-1,1].forEach(q=>{ const b=makeBanner(q<0?"#2F7D62":"#F2EEE3"), bx=mx+tan.x*1.9*q, bz=mz+tan.z*1.9*q; b.position.set(bx,heightAt(bx,bz),bz); b.rotation.y=Math.atan2(tan.x,tan.z)+Math.PI/2; sc.add(b); }); }
+  }
+
+  // scatter palms and rocks away from the trail and landmarks
+  const samples=[]; for(let k=0;k<=120;k++) samples.push(curve.getPoint(k/120));
+  const clear=(x,z,d)=>samples.every(p=>(p.x-x)*(p.x-x)+(p.z-z)*(p.z-z)>d*d);
+  const r=rng(11), rockM=mat(dark?(T2?"#3E3858":"#6C6488"):(T2?"#5A4C44":"#B48D62"));
+  let placed=0;
+  for(let k=0;k<400&&placed<(T2?60:46);k++){
+    const x=(r()-0.5)*120, z=-80+r()*155;
+    if(!clear(x,z,12)) continue;
+    if(r()<(T2?0.22:0.6)) palm(sc,x,z,0.8+r()*0.5,dark);
+    else { const m=new THREE.Mesh(new THREE.DodecahedronGeometry(0.6+r()*1.4),rockM); m.position.set(x,heightAt(x,z)+0.2,z); m.rotation.set(r()*3,r()*3,0); m.castShadow=true; sc.add(m); }
+    placed++;
+  }
+  for(let k=0;k<(T2?4:10);k++){ const t=(k+0.5)/(T2?4:10), p=curve.getPoint(t), tg=curve.getTangent(t), px=-tg.z, pz=tg.x, s=k%2?1:-1; palm(sc,p.x+px*4.8*s,p.z+pz*4.8*s,0.9,dark); }
+
+  // avatar
+  const av=makeAvatar(S.av); sc.add(av);
+  const place=t=>{const p=curve.getPoint(t);av.position.set(p.x,heightAt(p.x,p.z),p.z);const tg=curve.getTangent(Math.min(t+0.001,1));av.rotation.y=Math.atan2(tg.x,tg.z);};
+  place(Math.min(S.done,6)/6);
+
+  // animals: herds near each station, a caravan at the start, a few strays
+  const animals=[], ra=rng(23);
+  const spawn=(kind,x,z,wander,rotY)=>{const a=makeAnimal(kind,ra);a.position.set(x,heightAt(x,z),z);a.rotation.y=rotY===undefined?ra()*6.28:rotY;
+    Object.assign(a.userData,{anchor:[x,z],wander:!!wander,rad:1.2+ra()*1.6,dir:ra()<.5?-1:1,spd:0.22+ra()*0.18});sc.add(a);animals.push(a);};
+  const herd=T2?["kuda","kambing","unta","kuda","keldai","unta"]:["kambing","unta","keldai","unta","kambing","unta"];
+  info.forEach((f,i)=>{
+    const bx=f.p.x+f.perp.x*f.sgn*7.5, bz=f.p.z+f.perp.z*f.sgn*7.5;
+    if(herd[i]==="kambing"){for(let k=0;k<4;k++) spawn("kambing",bx+(ra()-.5)*3,bz+(ra()-.5)*3,true);}
+    else if(herd[i]==="unta"){spawn("unta",bx+f.tan.x*2.2,bz+f.tan.z*2.2,false);spawn("unta",bx-f.tan.x*2.4,bz-f.tan.z*2.4,false);spawn("kambing",bx+1.5,bz-1,true);}
+    else if(herd[i]==="kuda"){spawn("kuda",bx+f.tan.x*1.8,bz+f.tan.z*1.8,false);spawn("kuda",bx-f.tan.x*1.8,bz-f.tan.z*1.8,false);spawn("kambing",bx+1.2,bz+1.4,true);}
+    else {spawn("keldai",bx,bz,false);spawn("keldai",bx+f.tan.x*2,bz+f.tan.z*2,false);spawn("kambing",bx-1.6,bz+1.4,true);}
+  });
+  if(T2){ for(let k=0;k<3;k++){ const t=makeTent(dark?"#B8B0CC":"#EDE3CF"), tx=8+k*3.8, tz=ST[0][1]-2+(k%2)*1.5; t.position.set(tx,heightAt(tx,tz),tz); t.rotation.y=k*0.5; sc.add(t); } spawn("kuda",-7,ST[0][1]-1,false,Math.PI/2); spawn("unta",-10.5,ST[0][1]+1,false,Math.PI/2); }
+  else for(let k=0;k<3;k++) spawn("unta",7+k*3.4,ST[0][1]-1.5,false,-Math.PI/2);
+  for(let k=0;k<12;k++){const x=(ra()-0.5)*100, z=-70+ra()*130; if(!clear(x,z,9)) continue; const kind=ra()<.5?"kambing":(ra()<.5?"unta":(T2&&ra()<.6?"kuda":"keldai")); spawn(kind,x,z,kind==="kambing");}
+
+  // scrolls of knowledge between stations, alternating sides of the trail
+  const scrolls=[], parch=new THREE.MeshStandardMaterial({color:"#F3E2B5",flatShading:true,roughness:.6,emissive:new THREE.Color("#E8A050"),emissiveIntensity:.35}), ribbon=mat("#9C2F2F");
+  SCROLLS.forEach((sd,k)=>{
+    const ci=Math.floor(k/2), t=(ci+(k%2?0.68:0.32))/6, p=curve.getPoint(t), tg=curve.getTangent(t), side=k%2?1:-1;
+    const x=p.x-tg.z*6.5*side, z=p.z+tg.x*6.5*side;
+    const g=new THREE.Group(); g.position.set(x,heightAt(x,z)+1.1,z);
+    const roll=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,1.0,12),parch); roll.rotation.z=Math.PI/2; roll.castShadow=true; g.add(roll);
+    const rb=new THREE.Mesh(new THREE.TorusGeometry(0.23,0.045,6,16),ribbon); rb.rotation.y=Math.PI/2; g.add(rb);
+    g.userData={k:k,base:g.position.y}; g.visible=!(S.scrolls&&S.scrolls[k]); sc.add(g); scrolls.push(g);
+  });
+
+  // Tok Rahim: fictional storyteller who waits at each checkpoint
+  const npc=makeAvatar({skin:2,outfit:5,head:3,headColor:0,item:2});
+  const beard=new THREE.Mesh(new THREE.SphereGeometry(0.22,10,8),mat("#EEE8DA")); beard.position.set(0,1.76,0.27); beard.scale.set(1,1.25,0.7); npc.add(beard);
+  sc.add(npc);
+  const putNpc=i=>{const f=info[i];const nx=f.p.x+f.perp.x*f.sgn*1.5,nz=f.p.z+f.perp.z*f.sgn*1.5;npc.position.set(nx,heightAt(nx,nz),nz);npc.rotation.y=Math.atan2(-f.perp.x*f.sgn,-f.perp.z*f.sgn);};
+  putNpc(Math.min(S.done,5));
+  const bang=(function(){const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d");
+    x.fillStyle="#E8A050";x.beginPath();x.arc(64,64,54,0,Math.PI*2);x.fill();x.lineWidth=8;x.strokeStyle="#FFFFFF";x.stroke();
+    x.fillStyle="#FFFFFF";x.font="900 84px Figtree, sans-serif";x.textAlign="center";x.textBaseline="middle";x.fillText("!",64,70);
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),fog:false,depthTest:false}));sp.scale.set(1.4,1.4,1);sp.renderOrder=10;return sp;})();
+  bang.visible=S.done<6; sc.add(bang);
+  let mode="map", talking=false;
+  const dlgPos=new V(), dlgLook=new V(), dlgMid=new V(), dlgDir=new V();
+  function dialog(i){
+    mode="dlg"; walk=null; putNpc(i);
+    const f=info[i];
+    const ax=f.p.x-f.perp.x*f.sgn*0.4, az=f.p.z-f.perp.z*f.sgn*0.4;
+    av.position.set(ax,heightAt(ax,az),az); av.rotation.set(0,0,0); av.scale.set(1,1,1);
+    av.rotation.y=Math.atan2(npc.position.x-ax,npc.position.z-az);
+    npc.rotation.y=Math.atan2(ax-npc.position.x,az-npc.position.z);
+    labels.forEach(l=>{l.visible=false;}); bang.visible=false;
+    dlgMid.set((ax+npc.position.x)/2,(av.position.y+npc.position.y)/2,(az+npc.position.z)/2);
+    dlgDir.set(f.tan.x,0,f.tan.z).normalize();
+    dlgLook.set(dlgMid.x,dlgMid.y-0.9,dlgMid.z);
+  }
+
+  const cam=new THREE.PerspectiveCamera(50,1,0.1,600);
+  let yaw=0.3, walk=null, time=0, free=false, near=null, stepAcc=0;
+  const mv=new V(), fwd=new V(), rgt=new V();
+  const look=new V(), want=new V(), wantLook=new V();
+  const camWant=()=>{want.set(av.position.x+Math.sin(yaw)*15,av.position.y+10.5,av.position.z+Math.cos(yaw)*15);want.y=Math.max(want.y,heightAt(want.x,want.z)+3.5);wantLook.set(av.position.x,av.position.y+1.2,av.position.z-4);};
+  camWant(); cam.position.copy(want); look.copy(wantLook); cam.lookAt(look);
+
+  function frame(dt){
+    time+=dt;
+    animals.forEach(a=>{const u=a.userData;
+      if(u.wander&&!reduce){const ang=time*u.spd*u.dir+u.ph, x=u.anchor[0]+Math.cos(ang)*u.rad, z=u.anchor[1]+Math.sin(ang)*u.rad;
+        a.position.set(x,heightAt(x,z)+Math.abs(Math.sin(time*7+u.ph))*0.05,z); a.rotation.y=Math.atan2(-Math.sin(ang)*u.dir,Math.cos(ang)*u.dir);}
+      if(!reduce) u.head.rotation.x=Math.max(0,Math.sin(time*0.45+u.ph))*0.6;});
+    if(bang.visible) bang.position.set(npc.position.x,npc.position.y+3.4+(reduce?0:Math.sin(time*3)*0.18),npc.position.z);
+    if(mode==="dlg"){
+      const sw=reduce?0:Math.sin(time*0.25)*0.22, cs=Math.cos(sw), sn=Math.sin(sw);
+      const dx=dlgDir.x*cs-dlgDir.z*sn, dz=dlgDir.x*sn+dlgDir.z*cs;
+      const dd=Math.max(7,Math.min(13,5.6/Math.max(cam.aspect,0.3)));
+      dlgPos.set(dlgMid.x+dx*dd,dlgMid.y+2.4+dd*0.12,dlgMid.z+dz*dd);
+      const kf=1-Math.pow(0.05,dt); cam.position.lerp(dlgPos,kf); look.lerp(dlgLook,kf); cam.lookAt(look);
+      av.scale.y=1+Math.sin(time*2.2)*0.012;
+      npc.scale.y=talking&&!reduce?1+Math.abs(Math.sin(time*13))*0.025:1+Math.sin(time*1.8)*0.012;
+      npc.rotation.z=talking&&!reduce?Math.sin(time*5)*0.03:0;
+      gems.forEach(g=>{g.rotation.y+=dt*0.6;});
+      sun.position.set(dlgMid.x+30,dlgMid.y+50,dlgMid.z+22); sun.target.position.copy(dlgMid);
+      return;
+    }
+    scrolls.forEach(g=>{ if(!g.visible) return; g.rotation.y+=dt*1.4; if(!reduce) g.position.y=g.userData.base+Math.sin(time*2+g.userData.k)*0.2;
+      const dx=g.position.x-av.position.x, dz=g.position.z-av.position.z;
+      if(dx*dx+dz*dz<2.6){ g.visible=false; if(hooks.onScroll) hooks.onScroll(g.userData.k); } });
+    let moving=false;
+    if(!walk){
+      const J=G.joy||{x:0,y:0}, K=G.keys||{};
+      let jx=J.x+((K.ArrowRight||K.d)?1:0)-((K.ArrowLeft||K.a)?1:0), jy=J.y+((K.ArrowDown||K.s)?1:0)-((K.ArrowUp||K.w)?1:0);
+      const m=Math.hypot(jx,jy); if(m>1){jx/=m;jy/=m;}
+      if(m>0.08){
+        fwd.set(av.position.x-cam.position.x,0,av.position.z-cam.position.z).normalize(); rgt.set(-fwd.z,0,fwd.x);
+        mv.copy(fwd).multiplyScalar(-jy).addScaledVector(rgt,jx);
+        const sp=7.5*dt, nx=Math.max(-62,Math.min(62,av.position.x+mv.x*sp)), nz=Math.max(-72,Math.min(70,av.position.z+mv.z*sp));
+        av.position.set(nx,heightAt(nx,nz)+Math.abs(Math.sin(time*11))*0.15,nz);
+        let d=Math.atan2(mv.x,mv.z)-av.rotation.y; d=Math.atan2(Math.sin(d),Math.cos(d)); av.rotation.y+=d*Math.min(1,dt*10);
+        av.rotation.z=Math.sin(time*11)*0.05; free=true; moving=true;
+      } else if(free) av.rotation.z=0;
+    }
+    if(walk||moving){ stepAcc+=dt; if(stepAcc>0.33){stepAcc=0;SND.step();} }
+    let nn=null; for(let i=0;i<=Math.min(S.done,5);i++){ const f=info[i], dx=f.p.x-av.position.x, dz=f.p.z-av.position.z; if(dx*dx+dz*dz<18){nn=i;break;} }
+    if(walk) nn=null;
+    if(nn!==near){ near=nn; if(hooks.onNear) hooks.onNear(near); }
+    if(walk&&walk.straight){
+      walk.el+=dt; const u=Math.min(1,walk.el/walk.dur);
+      const x=walk.from.x+(walk.to.x-walk.from.x)*u, z=walk.from.z+(walk.to.z-walk.from.z)*u;
+      av.position.set(x,heightAt(x,z)+Math.abs(Math.sin(walk.el*11))*0.2,z);
+      av.rotation.y=Math.atan2(walk.to.x-walk.from.x,walk.to.z-walk.from.z); av.rotation.z=Math.sin(walk.el*11)*0.06;
+      if(u>=1){const d=walk.done;walk=null;free=false;av.rotation.z=0;setTimeout(d,350);}
+    } else if(walk){
+      walk.el+=dt; const u=Math.min(1,walk.el/walk.dur), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2, t=walk.a+(walk.b-walk.a)*e;
+      const p=curve.getPoint(t), tg=curve.getTangent(t);
+      av.position.set(p.x,heightAt(p.x,p.z)+Math.abs(Math.sin(walk.el*11))*0.2,p.z);
+      av.rotation.y=Math.atan2(tg.x,tg.z); av.rotation.z=Math.sin(walk.el*11)*0.06;
+      if(u>=1){const d=walk.done;walk=null;av.rotation.z=0;setTimeout(d,350);}
+    } else if(!moving&&!free){ av.scale.y=1+Math.sin(time*2.2)*0.015; let d=yaw-av.rotation.y; d=Math.atan2(Math.sin(d),Math.cos(d)); av.rotation.y+=d*Math.min(1,dt*4); }
+    gems.forEach(g=>{g.rotation.y+=dt*(g.userData.open?1.6:0.5); if(g.userData.open&&!reduce) g.position.y=g.userData.base+Math.sin(time*2.6)*0.28;});
+    camWant(); const kf=1-Math.pow(0.02,dt); cam.position.lerp(want,kf); look.lerp(wantLook,kf); cam.lookAt(look);
+    sun.position.set(av.position.x+30,av.position.y+50,av.position.z+22); sun.target.position.copy(av.position);
+  }
+
+  function go(i){
+    if(walk) return;
+    if(i<S.done){onEnter(i);return;}
+    if(i!==S.done) return;
+    if(reduce){place((i+1)/6);free=false;onEnter(i);return;}
+    if(free){ const to=info[i].p, dist=Math.hypot(to.x-av.position.x,to.z-av.position.z);
+      walk={straight:true,from:av.position.clone(),to:to.clone(),el:0,dur:Math.max(0.8,dist/7),done:()=>onEnter(i)}; return; }
+    walk={a:i/6,b:(i+1)/6,el:0,dur:3.2,done:()=>onEnter(i)};
+  }
+
+  const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+  let drag=null;
+  const ptr={
+    down:e=>{drag={x:e.clientX,y:e.clientY,moved:0};},
+    move:e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;drag.moved+=Math.abs(dx)+Math.abs(dy);drag.x=e.clientX;drag.y=e.clientY;yaw-=dx*0.009;},
+    up:e=>{ if(drag&&drag.moved<8){
+        const rc=G.r.domElement.getBoundingClientRect(); ndc.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
+        ray.setFromCamera(ndc,cam); const hit=ray.intersectObjects(picks,false)[0];
+        if(hit&&hit.object.userData.ch!==undefined) go(hit.object.userData.ch);
+      } drag=null; },
+    cancel:()=>{drag=null;}
+  };
+  return {scene:sc,cam,frame,ptr,go,dialog,talk:b=>{talking=b;},isWalking:()=>!!walk,enterNear:()=>{ if(near!==null&&!walk){ free=false; onEnter(near); } }};
+}
+
+G.keys={}; G.joy={x:0,y:0};
+document.addEventListener("keydown",e=>{ if(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName)) return; const k=e.key.length===1?e.key.toLowerCase():e.key; if(["w","a","s","d","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(k)&&document.getElementById("world")&&!document.querySelector(".play")){ G.keys[k]=true; e.preventDefault(); } });
+document.addEventListener("keyup",e=>{ const k=e.key.length===1?e.key.toLowerCase():e.key; G.keys[k]=false; });
+window.addEventListener("blur",()=>{G.keys={};});
+
+const NPC_NAME="Tok Rahim";
+let typingTimer=null;
+function say(pb,lines,done,W){
+  let k=0;
+  function show(){
+    const txt=lines[k];
+    pb.innerHTML='<div class="dlg tap" tabindex="0" role="button" aria-label="Teruskan"><span class="npc">'+NPC_NAME+'<small>pencerita sirah</small></span><p class="dtx" aria-live="polite"></p><span class="nxt">Ketik untuk teruskan ▾</span></div>';
+    const box=pb.firstChild, p=box.querySelector(".dtx");
+    let n=0, full=false;
+    clearInterval(typingTimer); if(W) W.talk(true);
+    const fin=()=>{clearInterval(typingTimer);p.textContent=txt;full=true;if(W)W.talk(false);};
+    if(reduce) fin(); else typingTimer=setInterval(()=>{n+=2;p.textContent=txt.slice(0,n);if(n>=txt.length)fin();},24);
+    const adv=()=>{if(!full){fin();return;} k++; if(k<lines.length) show(); else done();};
+    box.onclick=adv; box.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();adv();}};
+    try{box.focus({preventScroll:true});}catch(e){}
+  }
+  show();
+}
+
+function askQ(pb,i,W,onCorrect){
+  const q=pickQ(i), order=shuffle(q.opts.map((_,k)=>k));
+  let first=true, solved=false;
+  pb.innerHTML='<div class="dlg"><span class="npc">'+NPC_NAME+'<small>soalan</small></span><p class="dtx" aria-live="polite"></p>'+
+    '<div class="choices">'+order.map(k=>'<button class="choice" data-o="'+k+'">'+esc(q.opts[k])+'</button>').join("")+'</div><p class="qhint"></p></div>';
+  const p=pb.querySelector(".dtx"), hint=pb.querySelector(".qhint");
+  let n=0; clearInterval(typingTimer); W.talk(true);
+  const fin=()=>{clearInterval(typingTimer);p.textContent=q.text;W.talk(false);};
+  if(reduce) fin(); else typingTimer=setInterval(()=>{n+=2;p.textContent=q.text.slice(0,n);if(n>=q.text.length)fin();},24);
+  pb.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{
+    if(solved) return; fin();
+    const k=+b.dataset.o;
+    if(k===q.a){
+      solved=true; b.classList.add("ok"); hint.textContent=""; SND.ok();
+      setTimeout(()=>say(pb,[(first?"Tepat sekali. ":"Betul. ")+q.ex],()=>onCorrect(first?1:0),W),650);
+    } else {
+      first=false; b.classList.add("bad"); b.disabled=true; SND.bad(); hint.textContent="Hmm, bukan yang itu. Cuba lagi.";
+    }
+  });
+}
+
+function checkpoint(i,W){
+  const c=CH[i];
+  document.body.style.overflow="hidden";
+  const ov=document.createElement("div"); ov.className="play";
+  ov.innerHTML='<div class="w"></div><div class="ptop"><span class="chap">'+esc(stTag(i))+' · '+esc(c.short)+'</span><span class="row" style="gap:6px;flex-wrap:nowrap"><button class="pexit" id="psnd">'+(S.snd?"Bunyi on":"Bunyi off")+'</button><button class="pexit">Ke peta</button></span></div><div class="pbot"></div>';
+  document.body.appendChild(ov);
+  W.dialog(i);
+  mount3D(ov.querySelector(".w"),W.scene,W.cam,W.frame,null);
+  const pb=ov.querySelector(".pbot");
+  const close=toCert=>{clearInterval(typingTimer);ov.remove();document.body.style.overflow="";if(toCert) cert(); else map();};
+  ov.querySelectorAll(".pexit")[1].onclick=()=>close(false);
+  const ps=ov.querySelector("#psnd"); ps.onclick=()=>{S.snd=!S.snd;save();SND.resume();ps.textContent=S.snd?"Bunyi on":"Bunyi off";};
+  const ctype=pickType(i);
+  const CINTRO={susun:"Sebelum Tok sambung cerita, cuba susun peristiwa-peristiwa ni ikut urutan, dari yang paling awal.",
+    padan:"Kali ni Tok nak kamu padankan setiap peristiwa dengan masanya. Ketik peristiwa, lepas tu ketik masa yang betul.",
+    dulu:"Tok nak uji ingatan kamu. Tok bagi dua peristiwa, kamu pilih mana yang berlaku dulu. Ada empat pusingan.",
+    bs:"Tok ada empat kenyataan tentang medan ni. Ada yang betul, ada yang salah. Kamu tentukan.",
+    siapa:"Cuba teka siapa tokoh yang Tok maksudkan. Tok bagi petunjuk satu demi satu. Lagi cepat kamu teka, lagi banyak bintang.",
+    strategi:"Tengok peta ringkas ni. Tok nak kamu fikir macam seorang ketua: di mana kedudukan yang paling tepat?"};
+  const greet=["Assalamualaikum, "+S.name+". Tok ni "+NPC_NAME+", pencerita sirah. Selamat sampai ke stesen "+(i+1)+": "+c.name+"."]
+    .concat(c.intro.slice(0,1))
+    .concat([CINTRO[ctype]]);
+  say(pb,greet,()=>{
+    challengeInto(pb,i,'<div class="ovp">','</div>',st=>{
+      say(pb,[(st===3?"MasyaAllah, cemerlang. ":"Bagus, kamu berjaya. ")+"Mari tengok garis masa penuh bab ni, dengan tarikh dan ceritanya."],()=>{
+        pb.innerHTML='<div class="ovp"><p class="eyebrow">Garis masa · '+esc(stTag(i))+'</p><p class="stars" aria-label="'+st+' bintang">'+starStr(st)+'</p>'+
+          '<ol class="tl">'+c.ev.map(e=>'<li><div class="when">'+esc(e.w)+'</div><div class="what">'+esc(e.t)+'</div><div class="why">'+esc(e.d)+'</div></li>').join("")+'</ol>'+
+          '<button class="btn wide" id="tlgo">Teruskan</button></div>';
+        pb.querySelector("#tlgo").onclick=()=>{
+          say(pb,["Sekarang, satu soalan daripada Tok. Jawab betul pada cubaan pertama untuk dapat permata ilmu."],()=>{
+            askQ(pb,i,W,gem=>{
+              const r=commit(i,st,gem);
+              pb.innerHTML='<div class="ovp"><p class="eyebrow">'+esc(stTag(i))+' selesai</p><h2>'+esc(c.name)+'</h2>'+
+                '<p class="stars">'+starStr(st)+'</p><p class="small muted">'+(gem?"Kamu dapat permata ilmu ◆ di sini.":"Permata ilmu terlepas kali ini. Main semula untuk cuba lagi.")+'</p>'+
+                '<div class="fact stack"><p class="eyebrow">Tahukah kamu</p><p>'+esc(c.fact)+'</p><p class="src">Rujukan: '+esc(c.src)+'</p></div>'+
+                '<button class="btn wide" id="cpend">'+(r.last?"Terima sijil pengembara":"Kembali ke peta")+'</button></div>';
+              pb.querySelector("#cpend").onclick=()=>close(r.last);
+            });
+          },W);
+        };
+      },W);
+    },ctype);
+  },W);
+}
+
+function map3D(){
+  const nx=S.done<6?S.done:-1;
+  app.innerHTML='<section class="screen">'+
+   '<div class="hud">'+avatarSVG(S.av)+'<div class="who"><span class="muted small">'+esc(LEVELS[LVI].tag.split(" · ")[0])+'</span><b>'+esc(S.name)+'</b></div>'+
+   '<div class="tally"><span title="Bintang">★ '+totalStars()+'/18</span><span title="Permata ilmu">◆ '+totalGems()+'/6</span><span title="Gulungan ilmu" id="tscr">✧ '+totalScrolls()+'/12</span></div></div>'+
+   '<div class="world" id="world"><p class="world-hint">Joystick untuk berjalan, seret skrin untuk pusing kamera. Cari 12 gulungan ilmu yang bercahaya.</p>'+
+   '<div class="joy" id="joy" aria-label="Joystick untuk berjalan"><div class="knob"></div></div><button class="nearbtn" id="nearb" hidden></button><div id="toastw"></div></div>'+
+   (nx>=0
+     ?'<div class="panel stack"><div><p class="eyebrow">Stesen seterusnya</p><h3>'+esc(stTag(nx))+': '+esc(CH[nx].name)+'</h3><p class="muted small">'+esc(CH[nx].place)+' · '+esc(CH[nx].years)+'</p></div><button class="btn wide" id="walk">Jalan ke stesen</button></div>'
+     :'<div class="panel stack"><h3>'+(LVI===1?'Semua 6 medan selesai':'Semua 6 bab selesai')+'</h3><p class="muted small">'+(LVI===0?'Tahap 2: Medan Ghazwah sudah terbuka. Kamu juga boleh ketik mana-mana tugu untuk main semula.':'Tahap 3: Majlis Ilmu sedang dibina. Ketik mana-mana tugu untuk main semula.')+'</p>'+(LVI===0?'<button class="btn wide" id="nextlv">Teruskan ke Tahap 2</button>':'')+'<button class="btn '+(LVI===0?'ghost ':'')+'wide" id="cert">Lihat sijil</button></div>')+
+   (S.done>0?'<div><span class="lbl">Main semula bab</span><div class="chips">'+CH.slice(0,S.done).map((c,i)=>'<button class="chip" data-r="'+i+'">'+(i+1)+'. '+esc(c.short)+'</button>').join("")+'</div></div>':'')+
+   soundToggles()+
+   '<div class="row">'+(unlocked(1)?'<button class="btn ghost" id="lvsel">Pilih tahap</button>':'')+'<button class="btn ghost" id="lbm">Leaderboard</button><button class="btn ghost" id="edit">Tukar watak</button><button class="btn ghost" id="v2d">Peta 2D</button><button class="btn ghost" id="home">Menu utama</button></div>'+
+   '</section>';
+  const nearb=document.getElementById("nearb"), toastw=document.getElementById("toastw");
+  let W=null; W=buildWorld(i=>checkpoint(i,W),{
+    onNear:i=>{ if(i===null){nearb.hidden=true;return;} nearb.hidden=false; nearb.textContent=(i<S.done?"Main semula ":"Masuk ")+stTag(i); },
+    onScroll:k=>{ if(!S.scrolls) S.scrolls=fresh().scrolls; S.scrolls[k]=1; save(); SND.pick(); lbPush();
+      const tt=document.getElementById("tscr"); if(tt) tt.textContent="✧ "+totalScrolls()+"/12";
+      toastw.innerHTML='<div class="toast" role="status"><b>Gulungan ilmu '+totalScrolls()+'/12</b><p>'+esc(SCROLLS[k].f)+'</p><p class="src">Rujukan: '+esc(SCROLLS[k].src)+'</p><button id="tclose">Tutup</button></div>';
+      document.getElementById("tclose").onclick=()=>{toastw.innerHTML="";}; }
+  });
+  nearb.onclick=()=>W.enterNear();
+  (function(){ const joy=document.getElementById("joy"), knob=joy.firstChild; let id=null;
+    const setK=(x,y)=>{knob.style.transform="translate("+(x*34)+"px,"+(y*34)+"px)";G.joy.x=x;G.joy.y=y;};
+    const upd=e=>{const r=joy.getBoundingClientRect();let x=(e.clientX-r.left-r.width/2)/(r.width/2),y=(e.clientY-r.top-r.height/2)/(r.height/2);const m=Math.hypot(x,y);if(m>1){x/=m;y/=m;}setK(x,y);};
+    joy.addEventListener("pointerdown",e=>{id=e.pointerId;try{joy.setPointerCapture(id);}catch(_){}upd(e);e.preventDefault();});
+    joy.addEventListener("pointermove",e=>{if(e.pointerId===id)upd(e);});
+    const end=e=>{if(e.pointerId===id){id=null;setK(0,0);}};
+    joy.addEventListener("pointerup",end); joy.addEventListener("pointercancel",end); setK(0,0); })();
+  wireSoundToggles();
+  document.getElementById("lbm").onclick=()=>board(()=>map());
+  const lvs=document.getElementById("lvsel"); if(lvs) lvs.onclick=()=>levels();
+  const nl=document.getElementById("nextlv"); if(nl) nl.onclick=()=>{ setLevel(1); if(!S.seen2) lvIntro(); else map(); };
+  mount3D(document.getElementById("world"),W.scene,W.cam,W.frame,W.ptr);
+  const wb=document.getElementById("walk");
+  if(wb) wb.onclick=()=>{wb.disabled=true;wb.textContent="Sedang berjalan...";W.go(nx);};
+  const ce=document.getElementById("cert"); if(ce) ce.onclick=()=>cert();
+  app.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{if(!W.isWalking()) W.go(+b.dataset.r);});
+  document.getElementById("edit").onclick=()=>avatar();
+  document.getElementById("v2d").onclick=()=>{S.view2d=true;save();map();};
+  document.getElementById("home").onclick=()=>title(false);
+  top();
+}
+
+title(false);
+})();
+</script>
+
+</body>
+</html>

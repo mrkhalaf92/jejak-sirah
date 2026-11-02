@@ -1,0 +1,7 @@
+[build]
+  publish = "site"
+  command = "echo 'Tiada langkah build: site/ sudah siap.'"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
